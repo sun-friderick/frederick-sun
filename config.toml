@@ -1,0 +1,14 @@
+baseurl = "http://sun-friderick.github.io/"
+title = "Frederick's blog"
+languageCode = "en-us"
+disqusShortname = "frederick-sun"
+copyright = "Copyright (c) 2015, Frederick Sun; all rights reserved."
+MetaDataFormat = "yaml"
+
+[author]
+    name = "Frederick Sun"
+
+[indexes]
+    tag = "tags"
+    topic = "topics"
+
