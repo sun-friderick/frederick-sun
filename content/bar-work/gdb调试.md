@@ -9,7 +9,7 @@ url: /post/2015-11-29-7
 ---
 
 
-#gdb 跟踪调试命令整理 
+# gdb 跟踪调试命令整理 
 
 # gdb常用命令：
 
@@ -41,15 +41,15 @@ url: /post/2015-11-29-7
 
     gdb 执行文件名(含调试信息)
 
-#运行 GDB
+# 运行 GDB
  
-##运行 gdb
+## 运行 gdb
 
     gdb <program> -- program也就是你的执行文件,一般在当然目录下.
     gdb <program> core -- 用 gdb 同时调试一个运行程序和 core 文件,core 是程序非法执行后 core dump 后产生的文件.
     gdb <program> <PID> -- 调试正在运行的程序. program 为需要调试的程序文件, PID 为当前正在运行的程序.或是先用 gdb <program> 关联上源代码进入 gdb,后用 attach 命令来挂接进程的 PID.并用 detach 来取消挂接的进程
 
-##gdb 启动常用的参数
+## gdb 启动常用的参数
 
     从指定文件中读取符号表
         -symbols <file>
@@ -65,7 +65,7 @@ url: /post/2015-11-29-7
     设置启动时候参数
         --args arglist
 
-##gdb 帮助文档
+## gdb 帮助文档
 
     help -- 查看 gdb 的命令种类
     help <CmdType> -- 查看 CmdType 种类的 gdb 命令
@@ -73,22 +73,22 @@ url: /post/2015-11-29-7
     info <keyWord> -- 查看关键字 keyWord 调试信息
     show <keyWord> -- 查看关键字 keyWord gdb 本身设置信息
 
-##gdb 中运行 unix 的 shell 程序
+## gdb 中运行 unix 的 shell 程序
 
     shell <command string> -- 调用 unix 的 shell 来执行 <command string>,环境变量 shell 中定义的 unix 的 shell 将会被用来执行 <command string>,如果 shell 没有定义,那就使用 unix 的标准 shell：/bin/sh.(在 windows 中使用 command.com 或 cmd.exe)
     make <make-args> -- 等价于 “shell make <make-args>”
 
-##历史记录
+## 历史记录
 
     当你用 gdb 的 print 查看程序运行时的数据时,你每一个 print 都会被 gdb 记录下来.gdb 会以 $1, $2, $3 ...这样的方式为你每一个 print 命令编上号.于是,你可以使用这个编号访问以前的表达式,如 $1.这个功能所带来的好处是,如果你先前输入了一个比较长的表达式,如果你还想查看这个表达式的值,你可以使用历史记录来访问,省去了重复输入.
 
-##启动程序
+## 启动程序
 
     run <arg ...> -- 启动程序,<arg ...> 为程序运行时候需要输入的参数.也可用 set args 命令去设置运行参数.简写为 r
 
-#GDB 环境设置
+# GDB 环境设置
 
-##gdb 设置
+## gdb 设置
 
     设置显示选项
         地址
@@ -146,9 +146,9 @@ url: /post/2015-11-29-7
         调试模式
             set step-mode [on | off] -- step-mode 模式,于是,在进行单步跟踪时,程序不会因为没有debug信息而不停住.这个参数有很利于查看机器码. 
 
-#GDB 源码查看
+# GDB 源码查看
 
-##显示源代码
+## 显示源代码
 
     list <linenum> -- 显示程序第 linenum 行的周围的源程序.
     list <function> -- 显示函数名为 function 的函数的源程序.
@@ -159,31 +159,31 @@ url: /post/2015-11-29-7
     list - -- 显示当前行前面的源程序.
     list <first>, <last> -- 显示从 first 行到 last 行之间的源代码.若无 first 则显示从当前行到 last 之间的源代码.
 
-##设置和获得显示源码的行数
+## 设置和获得显示源码的行数
 
     set listsize <count> -- 设置一次显示源代码的行数.
     show listsize -- 查看当前listsize的设置.
 
-##搜索源代码
+## 搜索源代码
 
     forward-search <regexp> -- 向后面搜索.正则表达式为 regexp 的关键字
     search <regexp> -- 向后面搜索.正则表达式为 regexp 的关键字
     reverse-search <regexp> -- 向前面搜索.正则表达式为 regexp 的关键字
 
-##源代码的内存
+## 源代码的内存
 
     info line <linenum> -- 查看行号为 linenum 源代码在内存中的地址.
     info line <function> -- 查看函数在源代码在内存中的地址.
     info line <filename:linenum> -- 查看 filename 文件的第 linenum 行源代码在内存中的地址.
     info line <filename:function> -- 查看 filename 文件的 function 函数在源代码在内存中的地址.
 
-##查看汇编代码
+## 查看汇编代码
 
     disassemble -- 查看源程序的当前执行时的机器码,这个命令会把目前内存中的指令 dump 出来.
 
-#GDB 停止点设置及维护
+# GDB 停止点设置及维护
 
-##断点(BreakPoint)
+## 断点(BreakPoint)
 
     设置断点:(threadno 指定了线程的 ID,注意,这个 ID 是 gdb 分配的,可以通过 "info threads" 命令来查看正在运行程序中的线程信息)
         break thread <threadno> -- break命令没有参数时,表示在下一条指令处停住.
@@ -200,7 +200,7 @@ url: /post/2015-11-29-7
         info breakpoints [n]
         info break [n]
 
-##观察点(WatchPoint) -- 观察点一般来观察某个表达式(变量也是一种表达式)的值是否有变化了,如果有变化,马上停住程序.
+## 观察点(WatchPoint) -- 观察点一般来观察某个表达式(变量也是一种表达式)的值是否有变化了,如果有变化,马上停住程序.
 
     设在观察点
         watch <expr> -- 为表达式(变量)expr设置一个观察点.一量表达式值有变化时,马上停住程序.
@@ -209,7 +209,7 @@ url: /post/2015-11-29-7
     查看观察点
         info watchpoints -- 列出当前所设置了的所有观察点.
 
-##捕捉点(CatchPoint) -- 设置捕捉点来补捉程序运行时的一些事件.如:载入共享库(动态链接库)或是 C++ 的异常《/p>
+## 捕捉点(CatchPoint) -- 设置捕捉点来补捉程序运行时的一些事件.如:载入共享库(动态链接库)或是 C++ 的异常《/p>
 
     设置捕捉点
         catch <event> -- 当event发生时,停住程序.event可以是下面的内容：
@@ -222,7 +222,7 @@ url: /post/2015-11-29-7
             unload 或 unload <libname> 卸载共享库(动态链接库)时.(unload 为关键字,目前此功能只在 HP-UX 下有用)
         tcatch <event> -- 只设置一次捕捉点,当程序停住以后,应点被自动删除.
 
-##维护停止点
+## 维护停止点
 
     清除停止点
         clear -- 所有的已定义的停止点.
@@ -257,9 +257,9 @@ url: /post/2015-11-29-7
                continue
         end
 
-#信号(Signals)
+# 信号(Signals)
 
-##添加信号处理
+## 添加信号处理
 
     handle <signal> <keywords...>
     在 gdb 中定义一个信号处理.信号 <signal> 可以以 SIG 开头或不以 SIG 开头,可以用定义一个要处理信号的范围(如：SIGIO-SIGKILL,表示处理从 SIGIO 信号到 SIGKILL 的信号,其中包括 SIGIO, SIGIOT, SIGKILL 三个信号),也可以使用关键字 all 来标明要处理所有的信号.一旦被调试的程序接收到信号,运行程序马上会被 gdb 停住,以供调试.其 <keywords> 可以是以下几种关键字的一个或多个.若没有 keywords 则查看奇信号的处理状态
@@ -272,47 +272,47 @@ url: /post/2015-11-29-7
         nopass -- 当被调试的程序收到信号时,gdb 不处理信号.这表示,gdb 会把这个信号交给被调试程序会处理.
         1gnore -- 当被调试的程序收到信号时,gdb 不会让被调试程序来处理这个信号.
 
-##查看处理信号
+## 查看处理信号
 
     info signals -- 查看有哪些信号在被 gdb 检测中.
     info handle -- 查看有哪些信号在被 gdb 检测中.
 
-#GDB 程序调试
+# GDB 程序调试
 
-##恢复执行
+## 恢复执行
 
     continue [ignore-count] -- ignore-count 表示忽略其后的断点次数.恢复程序运行,直到程序结束,或是下一个断点到来.缩写 c
     fg [ignore-count] -- ignore-count 表示忽略其后的断点次数.恢复程序运行,直到程序结束,或是下一个断点到来.缩写 c
 
-##单步调试
+## 单步调试
 
     step <count> -- 单步跟踪,如果有函数调用,它会进入该函数.count 表示执行后面 count 条语句,不加则默认为 1.
     next <count> -- 同样单步跟踪,如果有函数调用,他不会进入该函数.count 表示执行后面 count 条语句,不加则默认为 1.
 
-##跟踪机器指令
+## 跟踪机器指令
        与之一样有相同功能的命令是 “display/i $pc” ,当运行完这个命令后,单步跟踪会在打出程序代码的同时打出机器指令(也就是汇编代码)
 
     stepi 或 si -- 单步跟踪一条机器指令,简写 si
     nexti 或 ni -- 单步跟踪一条机器指令,简写 ni
 
-##函数调试
+## 函数调试
 
     finish -- 运行程序,直到当前函数完成返回.并打印函数返回时的堆栈地址和返回值及参数值等信息.
     return <expression> -- 使函数以 expression 表达式返回出去,忽略还没有执行的语句.若无返回 void 出去
     call <expr> -- 表达式中可以一是函数,以此达到强制调用函数的目的.并显示函数的返回值,如果函数返回值是void,那么就不显示.
     print 与 printf 也可以做到类似的功能和 call 的不同是,如果函数返回 void,call 则不显示,print 则显示函数返回值,并把该值存入历史数据中.
 
-##循环体调试
+## 循环体调试
 
     until -- 可以运行程序直到退出循环体.简写 u
 
-##修改变量值
+## 修改变量值
 
     print varname=var -- 修改被调试程序运行时的变量值
     set var varname=value -- 修改被调试程序运行时的变变量
     whatis varname -- 查看变量的类型
 
-##跳转执行
+## 跳转执行
 
     jump <linespec> -- 指定下一条语句的运行点.<linespce> 可以是文件的行号,可以是 file:line 格式,可以是 +num 这种偏移量格式.表式着下一条运行语句从哪里开始.
     jump <address> -- 跳转到指定的程序内存地址运行.<address> 是代码行的内存地址.
@@ -320,13 +320,13 @@ url: /post/2015-11-29-7
         jump 指令不会改变当前的程序栈中的内容,所以,当你从一个函数跳到另一个函数时,当函数运行完返回时进行弹栈操作时必然会发生错误.
         jump 命令只是改变了指令寄存器中的值.于是可以使用 “set $pc” 来更改跳转执行的地址.如： set $pc = 0x485
 
-##产生信号量
+## 产生信号量
 
     signal <signal> -- 产生一个 signal 信号.UNIX 的系统信号量通常从 1 到 15.所以 <signal> 取值也在这个范围.
 
-#GDB 运行是数据
+# GDB 运行是数据
 
-##查看运行时数据
+## 查看运行时数据
 
     print /<f> <expr> -- 查看当前程序的运行数据.简写 p.
         <expr> 是表达式
@@ -348,7 +348,7 @@ url: /post/2015-11-29-7
                 *function::variable
     printf "fmt",arg,... -- 打印格式化字符灿 fmt.
 
-##查看内存
+## 查看内存
 
     examine/<n/f/u> <addr> -- 来查看内存地址中的值.简写 x
         <n/f/u>
@@ -371,7 +371,7 @@ url: /post/2015-11-29-7
                 g -- 表示八字节
         <addr> 表示一个内存地址.
 
-##自动显示
+## 自动显示
 
     设置自动显示
         display/<fmt> <expr> -- 自动显示 expr 表达式
@@ -386,7 +386,7 @@ url: /post/2015-11-29-7
         sable display <range> -- 禁用自动显示
         enable display <range> -- 启动自动显示
 
-##查看栈信息
+## 查看栈信息
 
     backtrace <n> -- 擦看函数栈信息,简写 bt
         n 若是正数,只打印栈顶上 n 层的栈信息,
@@ -398,7 +398,7 @@ url: /post/2015-11-29-7
     info locals -- 打印出当前函数中所有局部变量及其值.
     info catch -- 打印出当前的函数中的异常处理信息.
 
-##切换函数栈位置
+## 切换函数栈位置
 
     frame <n> -- 切换到第 n 层函数栈位置,简写 f.
     p <n> -- 表示上面移动 n 层,可以不打 n,表示向上移动一层.
@@ -407,20 +407,20 @@ url: /post/2015-11-29-7
     up-silently <n> -- 类似 up 命令.不打印出栈层信息.
     down-silently <n> -- 类似 down 命令.不打印出栈层信息.
 
-##查看寄存器
+## 查看寄存器
 
     info registers -- 查看寄存器的情况.(除了浮点寄存器)
     info all-registers -- 查看所有寄存器的情况.(包括浮点寄存器)
     info registers <regname> -- 查看所指定的寄存器的情况.
 
-##线程查看与切换线程
+## 线程查看与切换线程
 
     info threads -- 查看当前线程
     thread <threadno> -- 切换到 threadno 的线程,简写 t
 
-#自定义命令
+# 自定义命令
 
-##定义一个命令
+## 定义一个命令
 
     格式
     define comdName
@@ -437,13 +437,13 @@ url: /post/2015-11-29-7
           ...
     end
 
-##定义一个命令的文档信息（在 help cmdName 的时候显示）
+## 定义一个命令的文档信息（在 help cmdName 的时候显示）
 
     document cmdName
           ...
     end
 
-##查看自定命令
+## 查看自定命令
 
     help user-define -- 查看所有用户自定义的命令
     show user cmdName -- 查看用户定义的 cmdName 的命令.
