@@ -359,8 +359,26 @@ $ ping username.github.io
 
 使用网站分析可以帮助我们更好地了解博客的读者和流量来源，我使用了[百度统计](http://tongji.baidu.com)和[谷歌统计](http://www.google.cn/webmasters/)，注册帐号后只需要按照提示在模板中加入相应的script代码就可以了。
 
+# 写在最后
+注意：
+ 1. 在每篇文章会有个头部：
+ 
+    ---
+    date: 2015-11-29T00:30:03+08:00
+    description: ""
+    tags: ["gdb","gdb调试","gdb调试方法","多线程调试","网站"]
+    title: "gdb调试方法精粹"
+    topics: []
+    draft: false
+    url: /post/2015-11-29-8
+    ---
+注意在最后的url字段属于站内引用，因此每一篇文章的url的值是不能相同的
+
+
+
 # 参考
 1. [Hugo docs](http://gohugo.io/overview/introduction/)
 2. [《内核恐慌》静态网站生成器](http://ipn.li/kernelpanic/3/) 
 3. [Build Static Sites in Seconds with Hugo](https://www.udemy.com/build-static-sites-in-seconds-with-hugo/)
 4. [Setting up a custom domain with GitHub Pages](https://help.github.com/articles/setting-up-a-custom-domain-with-github-pages/)
+5. 本文转自[nanshu.wang](http://nanshu.wang/)的[gitpage](http://nanshu.wang/post/2015-01-31/)
