@@ -1,8 +1,8 @@
 ---
 date: 2015-11-31T00:30:03+08:00
 description: ""
-tags: ["Hugo","静态网站生成器","博客","教程","网站"]
-title: "Hugo静态网站生成器中文教程"
+tags: ["markdown","语法","Markdown语法","教程"]
+title: "Markdown语法"
 topics: []
 draft: false
 url: /post/2015-11-31
