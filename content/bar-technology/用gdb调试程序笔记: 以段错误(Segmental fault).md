@@ -1,11 +1,11 @@
 ---
-date: 2015-01-31T00:30:03+08:00
+date: 2015-11-31T00:30:03+08:00
 description: ""
 tags: ["Hugo","静态网站生成器","博客","教程","网站"]
 title: "用gdb调试程序笔记: 以段错误(Segmental fault)"
 topics: []
 draft: false
-url: /post/2015-01-31
+url: /post/2015-11-31
 ---
 
 
