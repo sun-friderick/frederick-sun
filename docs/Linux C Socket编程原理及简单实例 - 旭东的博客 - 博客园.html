@@ -1,0 +1,297 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="zh-cn">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<title>Linux C Socket编程原理及简单实例 - 旭东的博客 - 博客园</title>
+<link type="text/css" rel="stylesheet" href="/bundles/blog-common.css?v=bUIwWWV1zgywuOoHWuVxIG1EP3zQ7o8gkD0p6uxWw0g1"/>
+<link id="MainCss" type="text/css" rel="stylesheet" href="/skins/AnotherEon001/bundle-AnotherEon001.css?v=_m-jLtl6JZTPbqa4gXDwru2bF6vsLtluIVqvc1OQ0ko1"/>
+<link title="RSS" type="application/rss+xml" rel="alternate" href="http://www.cnblogs.com/xudong-bupt/rss"/>
+<link title="RSD" type="application/rsd+xml" rel="EditURI" href="http://www.cnblogs.com/xudong-bupt/rsd.xml"/>
+<link type="application/wlwmanifest+xml" rel="wlwmanifest" href="http://www.cnblogs.com/xudong-bupt/wlwmanifest.xml"/>
+<script src="http://common.cnblogs.com/script/jquery.js" type="text/javascript"></script>  
+<script type="text/javascript">var currentBlogApp = 'xudong-bupt', cb_enable_mathjax=false;</script>
+<script src="/bundles/blog-common.js?v=CLLiFNNgL6CohO3Olq2i7r9tPyHtCoryr0KngxdwUm41" type="text/javascript"></script>
+</head>
+<body>
+<a name="top"></a>
+
+<div id="wrapper">
+<div id="header">
+
+<div id="top">
+<h1><a id="Header1_HeaderTitle" class="headermaintitle" href="http://www.cnblogs.com/xudong-bupt/">旭东的博客</a></h1>
+<div id="subtitle">模式匹配，并行计算，C++/JAVA/CUDA/OpenCL</div>
+</div>
+<div id="sub">
+<div class="BlogStats">随笔 - 157, 文章 - 0, 评论 - 120, 引用 - 0</div>
+</div>
+
+
+
+</div>
+<div id="main_container">
+<div id="main_content">
+<div id="content">
+	
+<div id="post_detail">
+	<div class="post">
+		<h2>
+			<a id="cb_post_title_url" href="http://www.cnblogs.com/xudong-bupt/p/3483059.html">Linux C Socket编程原理及简单实例</a>
+		</h2>
+		<div class="postbody">
+		<div id="cnblogs_post_body"><p>部分转自：http://goodcandle.cnblogs.com/archive/2005/12/10/294652.aspx</p>
+<p><span lang="EN-US"><span lang="EN-US"><span>1.<span>&nbsp;&nbsp; </span></span><span>什么是</span><span lang="EN-US">TCP/IP</span><span>、</span><span lang="EN-US">UDP</span><span>？</span></span></span></p>
+<p><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span>2.<span>&nbsp;&nbsp; </span></span><span lang="EN-US">Socket</span><span>在哪里呢？</span></span></span></span></p>
+<p><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span>3.<span>&nbsp;&nbsp; </span></span><span lang="EN-US">Socket</span><span>是什么呢？</span></span></span></span></span></p>
+<p><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span>4.<span>&nbsp;&nbsp; </span></span><span lang="EN-US">有很多的框架，为什么还在从Socket开始？</span></span></span></span></span></p>
+<p><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span>5.&nbsp;&nbsp; Linux C Socket简单示例<br /></span></span></span></span></span></span></p>
+<p>&nbsp;</p>
+<p><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><strong><span>1.什么是</span><span lang="EN-US">TCP/IP</span></strong><strong><span>、</span><span lang="EN-US">UDP</span></strong><strong><span>？</span></strong></span></span></span></span></span></span></span></span></span></span></span></p>
+<p><span lang="EN-US">　　<span lang="EN-US">TCP/IP</span><span>（</span><span lang="EN-US">Transmission Control Protocol/Internet Protocol</span><span>）即传输控制协议</span><span lang="EN-US">/</span><span>网间协议，是一个工业标准的协议集，它是为广域网（</span><span lang="EN-US">WANs</span><span>）设计的。<br /></span><span lang="EN-US"><span lang="EN-US">　　UDP</span><span>（</span><span lang="EN-US">User Data Protocol</span><span>，用户数据报协议）是与</span><span lang="EN-US">TCP</span><span>相对应的协议。它是属于</span><span lang="EN-US">TCP/IP</span><span>协议族中的一种。<br /></span><span lang="EN-US">　　<span>下面的图表明了这些协议的关系。</span></span></span></span></p>
+<p style="text-align: center;">&nbsp;<img src="http://images.cnitblog.com/blog/466768/201312/27111530-6d4641d32e944b98b698e167f72a263f.png" alt="" /></p>
+<p><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><strong><span lang="EN-US">2.Socket</span></strong><strong><span>在哪里呢？</span></strong></span></span></span></span></span></p>
+<p style="text-align: center;"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><strong><span><img src="http://images.cnitblog.com/blog/466768/201312/27111710-a88a3bab25064f0480b41f22b50d6f76.png" alt="" /></span></strong></span></span></span></span></span></p>
+<p><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><strong><span><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><strong><span lang="EN-US">3.Socket</span></strong><strong><span>是什么呢？</span></strong></span></span></span></span></span></span></span></strong></span></span></span></span></span></p>
+<p><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US">　　Socket</span>是应用层与<span lang="EN-US">TCP/IP</span>协议族通信的中间软件抽象层，它是一组接口。在设计模式中，<span lang="EN-US">Socket</span>其实就是一个门面模式，它把复杂的<span lang="EN-US">TCP/IP</span>协议族隐藏在<span lang="EN-US">Socket</span>接口后面，对用户来说，一组简单的接口就是全部，让<span lang="EN-US">Socket</span>去组织数据，以符合指定的协议。</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></p>
+<p><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US">　　<span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US">门面模式</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span>，用自己的话说，就是系统对外界提供单一的接口，外部不需要了解内部的实现。</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></p>
+<p><strong><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US">4.<span lang="EN-US">有很多的框架，为什么还在从Socket开始？</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></strong></p>
+<p><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US">　　现在的跨平台网络编程框架很多，如Java的SSH，C/C++的Boost等。</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></p>
+<p><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US">　　现在的分布式框架很多，如Hadoop等。</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></p>
+<p><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US">　　我的任务是把一个C/C++程序做成分布式，要求的不配环境，基本属于纯计算的，结果很小。所以选择了Socket。</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></p>
+<p><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US">　　重要的是Socket是分布式、云计算、网络编程的基础，对Socket的学习有利于对其他框架的理解。</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></p>
+<p><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US">　　下图是Socket编程的基本流程：</span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></p>
+<p style="text-align: center;"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><img src="http://images.cnitblog.com/blog/466768/201312/27113109-ad8f7a2ce6d64ae39706ef7db3aa07cd.png" alt="" /></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></span></p>
+<p><strong>5.<span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span>Linux C Socket简单实例与详细注释</span></span></span></span></span></span><br /></strong></p>
+<p><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US"><span lang="EN-US">&nbsp;程序为简单的&ldquo;回射&rdquo;，客户端将控制台输入的信息发送给服务器端，服务器原样返回信息。</span></span></span></span></span></p>
+<p>&nbsp;服务器端：</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('a7507ff0-60eb-4482-9bf0-a73846b160b3')"><img id="code_img_closed_a7507ff0-60eb-4482-9bf0-a73846b160b3" class="code_img_closed" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img id="code_img_opened_a7507ff0-60eb-4482-9bf0-a73846b160b3" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('a7507ff0-60eb-4482-9bf0-a73846b160b3',event)" src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
+<div id="cnblogs_code_open_a7507ff0-60eb-4482-9bf0-a73846b160b3" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> #include &lt;sys/types.h&gt;
+<span style="color: #008080;"> 2</span> #include &lt;sys/socket.h&gt;
+<span style="color: #008080;"> 3</span> #include &lt;stdio.h&gt;
+<span style="color: #008080;"> 4</span> #include &lt;netinet/<span style="color: #0000ff;">in</span>.h&gt;
+<span style="color: #008080;"> 5</span> #include &lt;arpa/inet.h&gt;
+<span style="color: #008080;"> 6</span> #include &lt;unistd.h&gt;
+<span style="color: #008080;"> 7</span> #include &lt;<span style="color: #0000ff;">string</span>.h&gt;
+<span style="color: #008080;"> 8</span> #include &lt;stdlib.h&gt;
+<span style="color: #008080;"> 9</span> #include &lt;fcntl.h&gt;
+<span style="color: #008080;">10</span> #include &lt;sys/shm.h&gt;
+<span style="color: #008080;">11</span> 
+<span style="color: #008080;">12</span> <span style="color: #0000ff;">#define</span> MYPORT  8887
+<span style="color: #008080;">13</span> <span style="color: #0000ff;">#define</span> QUEUE   20
+<span style="color: #008080;">14</span> <span style="color: #0000ff;">#define</span> BUFFER_SIZE 1024
+<span style="color: #008080;">15</span> 
+<span style="color: #008080;">16</span> <span style="color: #0000ff;">int</span><span style="color: #000000;"> main()
+</span><span style="color: #008080;">17</span> <span style="color: #000000;">{
+</span><span style="color: #008080;">18</span>     <span style="color: #808080;">///</span><span style="color: #008000;">定义sockfd</span>
+<span style="color: #008080;">19</span>     <span style="color: #0000ff;">int</span> server_sockfd = socket(AF_INET,SOCK_STREAM, <span style="color: #800080;">0</span><span style="color: #000000;">);
+</span><span style="color: #008080;">20</span> 
+<span style="color: #008080;">21</span>     <span style="color: #808080;">///</span><span style="color: #008000;">定义sockaddr_in</span>
+<span style="color: #008080;">22</span>     <span style="color: #0000ff;">struct</span><span style="color: #000000;"> sockaddr_in server_sockaddr;
+</span><span style="color: #008080;">23</span>     server_sockaddr.sin_family =<span style="color: #000000;"> AF_INET;
+</span><span style="color: #008080;">24</span>     server_sockaddr.sin_port =<span style="color: #000000;"> htons(MYPORT);
+</span><span style="color: #008080;">25</span>     server_sockaddr.sin_addr.s_addr =<span style="color: #000000;"> htonl(INADDR_ANY);
+</span><span style="color: #008080;">26</span> 
+<span style="color: #008080;">27</span>     <span style="color: #808080;">///</span><span style="color: #008000;">bind，成功返回0，出错返回-1</span>
+<span style="color: #008080;">28</span>     <span style="color: #0000ff;">if</span>(bind(server_sockfd,(<span style="color: #0000ff;">struct</span> sockaddr *)&amp;server_sockaddr,<span style="color: #0000ff;">sizeof</span>(server_sockaddr))==-<span style="color: #800080;">1</span><span style="color: #000000;">)
+</span><span style="color: #008080;">29</span> <span style="color: #000000;">    {
+</span><span style="color: #008080;">30</span>         perror(<span style="color: #800000;">"</span><span style="color: #800000;">bind</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+</span><span style="color: #008080;">31</span>         exit(<span style="color: #800080;">1</span><span style="color: #000000;">);
+</span><span style="color: #008080;">32</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">33</span> 
+<span style="color: #008080;">34</span>     <span style="color: #808080;">///</span><span style="color: #008000;">listen，成功返回0，出错返回-1</span>
+<span style="color: #008080;">35</span>     <span style="color: #0000ff;">if</span>(listen(server_sockfd,QUEUE) == -<span style="color: #800080;">1</span><span style="color: #000000;">)
+</span><span style="color: #008080;">36</span> <span style="color: #000000;">    {
+</span><span style="color: #008080;">37</span>         perror(<span style="color: #800000;">"</span><span style="color: #800000;">listen</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+</span><span style="color: #008080;">38</span>         exit(<span style="color: #800080;">1</span><span style="color: #000000;">);
+</span><span style="color: #008080;">39</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">40</span> 
+<span style="color: #008080;">41</span>     <span style="color: #808080;">///</span><span style="color: #008000;">客户端套接字</span>
+<span style="color: #008080;">42</span>     <span style="color: #0000ff;">char</span><span style="color: #000000;"> buffer[BUFFER_SIZE];
+</span><span style="color: #008080;">43</span>     <span style="color: #0000ff;">struct</span><span style="color: #000000;"> sockaddr_in client_addr;
+</span><span style="color: #008080;">44</span>     socklen_t length = <span style="color: #0000ff;">sizeof</span><span style="color: #000000;">(client_addr);
+</span><span style="color: #008080;">45</span> 
+<span style="color: #008080;">46</span>     <span style="color: #808080;">///</span><span style="color: #008000;">成功返回非负描述字，出错返回-1</span>
+<span style="color: #008080;">47</span>     <span style="color: #0000ff;">int</span> conn = accept(server_sockfd, (<span style="color: #0000ff;">struct</span> sockaddr*)&amp;client_addr, &amp;<span style="color: #000000;">length);
+</span><span style="color: #008080;">48</span>     <span style="color: #0000ff;">if</span>(conn&lt;<span style="color: #800080;">0</span><span style="color: #000000;">)
+</span><span style="color: #008080;">49</span> <span style="color: #000000;">    {
+</span><span style="color: #008080;">50</span>         perror(<span style="color: #800000;">"</span><span style="color: #800000;">connect</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+</span><span style="color: #008080;">51</span>         exit(<span style="color: #800080;">1</span><span style="color: #000000;">);
+</span><span style="color: #008080;">52</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">53</span> 
+<span style="color: #008080;">54</span>     <span style="color: #0000ff;">while</span>(<span style="color: #800080;">1</span><span style="color: #000000;">)
+</span><span style="color: #008080;">55</span> <span style="color: #000000;">    {
+</span><span style="color: #008080;">56</span>         memset(buffer,<span style="color: #800080;">0</span>,<span style="color: #0000ff;">sizeof</span><span style="color: #000000;">(buffer));
+</span><span style="color: #008080;">57</span>         <span style="color: #0000ff;">int</span> len = recv(conn, buffer, <span style="color: #0000ff;">sizeof</span>(buffer),<span style="color: #800080;">0</span><span style="color: #000000;">);
+</span><span style="color: #008080;">58</span>         <span style="color: #0000ff;">if</span>(strcmp(buffer,<span style="color: #800000;">"</span><span style="color: #800000;">exit\n</span><span style="color: #800000;">"</span>)==<span style="color: #800080;">0</span><span style="color: #000000;">)
+</span><span style="color: #008080;">59</span>             <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;">60</span> <span style="color: #000000;">        fputs(buffer, stdout);
+</span><span style="color: #008080;">61</span>         send(conn, buffer, len, <span style="color: #800080;">0</span><span style="color: #000000;">);
+</span><span style="color: #008080;">62</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">63</span> <span style="color: #000000;">    close(conn);
+</span><span style="color: #008080;">64</span> <span style="color: #000000;">    close(server_sockfd);
+</span><span style="color: #008080;">65</span>     <span style="color: #0000ff;">return</span> <span style="color: #800080;">0</span><span style="color: #000000;">;
+</span><span style="color: #008080;">66</span> }</pre>
+</div>
+<span class="cnblogs_code_collapse">View Code </span></div>
+<p>客户端：</p>
+<div class="cnblogs_code" onclick="cnblogs_code_show('830a81a3-2668-49b1-bcd6-00527d5993cb')"><img id="code_img_closed_830a81a3-2668-49b1-bcd6-00527d5993cb" class="code_img_closed" src="http://images.cnblogs.com/OutliningIndicators/ContractedBlock.gif" alt="" /><img id="code_img_opened_830a81a3-2668-49b1-bcd6-00527d5993cb" class="code_img_opened" style="display: none;" onclick="cnblogs_code_hide('830a81a3-2668-49b1-bcd6-00527d5993cb',event)" src="http://images.cnblogs.com/OutliningIndicators/ExpandedBlockStart.gif" alt="" />
+<div id="cnblogs_code_open_830a81a3-2668-49b1-bcd6-00527d5993cb" class="cnblogs_code_hide">
+<pre><span style="color: #008080;"> 1</span> #include &lt;sys/types.h&gt;
+<span style="color: #008080;"> 2</span> #include &lt;sys/socket.h&gt;
+<span style="color: #008080;"> 3</span> #include &lt;stdio.h&gt;
+<span style="color: #008080;"> 4</span> #include &lt;netinet/<span style="color: #0000ff;">in</span>.h&gt;
+<span style="color: #008080;"> 5</span> #include &lt;arpa/inet.h&gt;
+<span style="color: #008080;"> 6</span> #include &lt;unistd.h&gt;
+<span style="color: #008080;"> 7</span> #include &lt;<span style="color: #0000ff;">string</span>.h&gt;
+<span style="color: #008080;"> 8</span> #include &lt;stdlib.h&gt;
+<span style="color: #008080;"> 9</span> #include &lt;fcntl.h&gt;
+<span style="color: #008080;">10</span> #include &lt;sys/shm.h&gt;
+<span style="color: #008080;">11</span> 
+<span style="color: #008080;">12</span> <span style="color: #0000ff;">#define</span> MYPORT  8887
+<span style="color: #008080;">13</span> <span style="color: #0000ff;">#define</span> BUFFER_SIZE 1024
+<span style="color: #008080;">14</span> 
+<span style="color: #008080;">15</span> <span style="color: #0000ff;">int</span><span style="color: #000000;"> main()
+</span><span style="color: #008080;">16</span> <span style="color: #000000;">{
+</span><span style="color: #008080;">17</span>     <span style="color: #808080;">///</span><span style="color: #008000;">定义sockfd</span>
+<span style="color: #008080;">18</span>     <span style="color: #0000ff;">int</span> sock_cli = socket(AF_INET,SOCK_STREAM, <span style="color: #800080;">0</span><span style="color: #000000;">);
+</span><span style="color: #008080;">19</span> 
+<span style="color: #008080;">20</span>     <span style="color: #808080;">///</span><span style="color: #008000;">定义sockaddr_in</span>
+<span style="color: #008080;">21</span>     <span style="color: #0000ff;">struct</span><span style="color: #000000;"> sockaddr_in servaddr;
+</span><span style="color: #008080;">22</span>     memset(&amp;servaddr, <span style="color: #800080;">0</span>, <span style="color: #0000ff;">sizeof</span><span style="color: #000000;">(servaddr));
+</span><span style="color: #008080;">23</span>     servaddr.sin_family =<span style="color: #000000;"> AF_INET;
+</span><span style="color: #008080;">24</span>     servaddr.sin_port = htons(MYPORT);  <span style="color: #808080;">///</span><span style="color: #008000;">服务器端口</span>
+<span style="color: #008080;">25</span>     servaddr.sin_addr.s_addr = inet_addr(<span style="color: #800000;">"</span><span style="color: #800000;">127.0.0.1</span><span style="color: #800000;">"</span>);  <span style="color: #808080;">///</span><span style="color: #008000;">服务器ip
+</span><span style="color: #008080;">26</span> 
+<span style="color: #008080;">27</span>     <span style="color: #808080;">///</span><span style="color: #008000;">连接服务器，成功返回0，错误返回-1</span>
+<span style="color: #008080;">28</span>     <span style="color: #0000ff;">if</span> (connect(sock_cli, (<span style="color: #0000ff;">struct</span> sockaddr *)&amp;servaddr, <span style="color: #0000ff;">sizeof</span>(servaddr)) &lt; <span style="color: #800080;">0</span><span style="color: #000000;">)
+</span><span style="color: #008080;">29</span> <span style="color: #000000;">    {
+</span><span style="color: #008080;">30</span>         perror(<span style="color: #800000;">"</span><span style="color: #800000;">connect</span><span style="color: #800000;">"</span><span style="color: #000000;">);
+</span><span style="color: #008080;">31</span>         exit(<span style="color: #800080;">1</span><span style="color: #000000;">);
+</span><span style="color: #008080;">32</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">33</span> 
+<span style="color: #008080;">34</span>     <span style="color: #0000ff;">char</span><span style="color: #000000;"> sendbuf[BUFFER_SIZE];
+</span><span style="color: #008080;">35</span>     <span style="color: #0000ff;">char</span><span style="color: #000000;"> recvbuf[BUFFER_SIZE];
+</span><span style="color: #008080;">36</span>     <span style="color: #0000ff;">while</span> (fgets(sendbuf, <span style="color: #0000ff;">sizeof</span>(sendbuf), stdin) !=<span style="color: #000000;"> NULL)
+</span><span style="color: #008080;">37</span> <span style="color: #000000;">    {
+</span><span style="color: #008080;">38</span>         send(sock_cli, sendbuf, strlen(sendbuf),<span style="color: #800080;">0</span>); <span style="color: #808080;">///</span><span style="color: #008000;">发送</span>
+<span style="color: #008080;">39</span>         <span style="color: #0000ff;">if</span>(strcmp(sendbuf,<span style="color: #800000;">"</span><span style="color: #800000;">exit\n</span><span style="color: #800000;">"</span>)==<span style="color: #800080;">0</span><span style="color: #000000;">)
+</span><span style="color: #008080;">40</span>             <span style="color: #0000ff;">break</span><span style="color: #000000;">;
+</span><span style="color: #008080;">41</span>         recv(sock_cli, recvbuf, <span style="color: #0000ff;">sizeof</span>(recvbuf),<span style="color: #800080;">0</span>); <span style="color: #808080;">///</span><span style="color: #008000;">接收</span>
+<span style="color: #008080;">42</span> <span style="color: #000000;">        fputs(recvbuf, stdout);
+</span><span style="color: #008080;">43</span> 
+<span style="color: #008080;">44</span>         memset(sendbuf, <span style="color: #800080;">0</span>, <span style="color: #0000ff;">sizeof</span><span style="color: #000000;">(sendbuf));
+</span><span style="color: #008080;">45</span>         memset(recvbuf, <span style="color: #800080;">0</span>, <span style="color: #0000ff;">sizeof</span><span style="color: #000000;">(recvbuf));
+</span><span style="color: #008080;">46</span> <span style="color: #000000;">    }
+</span><span style="color: #008080;">47</span> 
+<span style="color: #008080;">48</span> <span style="color: #000000;">    close(sock_cli);
+</span><span style="color: #008080;">49</span>     <span style="color: #0000ff;">return</span> <span style="color: #800080;">0</span><span style="color: #000000;">;
+</span><span style="color: #008080;">50</span> }</pre>
+</div>
+<span class="cnblogs_code_collapse">View Code </span></div>
+<p>执行：</p>
+<p>客户端</p>
+<p><img src="http://images.cnitblog.com/blog/466768/201312/29163938-e5b43a8d3501467d8723b2de7392ab49.x-png" alt="" /></p>
+<p>服务器端</p>
+<p><img src="http://images.cnitblog.com/blog/466768/201312/29163855-55c0a397cda04d4a9f46ada36149af3b.x-png" alt="" /></p></div><div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+<div id="BlogPostCategory"></div>
+<div id="EntryTag"></div>
+<div id="blog_post_info">
+</div>
+<div class="clear"></div>
+<div id="post_next_prev"></div>
+</div>
+
+
+		</div>
+		<p class="postfoot">
+			posted on <span id="post-date">2013-12-29 16:46</span> <a href='http://www.cnblogs.com/xudong-bupt/'>旭东的博客</a> 阅读(<span id="post_view_count">...</span>) 评论(<span id="post_comment_count">...</span>)  <a href ="http://i.cnblogs.com/EditPosts.aspx?postid=3483059" rel="nofollow">编辑</a> <a href="#" onclick="AddToWz(3483059);return false;">收藏</a>
+		</p>
+	</div>
+	<script type="text/javascript">var allowComments=true,isLogined=false,cb_blogId=134009,cb_entryId=3483059,cb_blogApp=currentBlogApp,cb_blogUserGuid='10bd0daf-3b2b-e211-aa8f-842b2b196315',cb_entryCreatedDate='2013/12/29 16:46:00';loadViewCount(cb_entryId);</script>
+	
+	</div><a name="!comments"></a><div id="blog-comments-placeholder"></div><script type="text/javascript">var commentManager = new blogCommentManager();commentManager.renderComments(0);</script>
+<div id="comment_form" class="commentform">
+<a name="commentform"></a>
+<div id="divCommentShow"></div>
+<div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" id="lnk_RefreshComments" onclick="return RefreshCommentList();">刷新评论</a><a href="#" onclick="return RefreshPage();">刷新页面</a><a href="#top">返回顶部</a></div>
+<div id="comment_form_container"></div>
+<div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+<div id="site_nav_under"><a href="http://www.cnblogs.com/" target="_blank" title="开发者的网上家园">博客园首页</a><a href="http://q.cnblogs.com/" target="_blank" title="程序员问答社区">博问</a><a href="http://news.cnblogs.com/" target="_blank" title="IT新闻">新闻</a><a href="http://home.cnblogs.com/ing/" target="_blank">闪存</a><a href="http://job.cnblogs.com/" target="_blank">程序员招聘</a><a href="http://kb.cnblogs.com/" target="_blank">知识库</a></div>
+<div id="opt_under_post"></div>
+<script type="text/javascript">
+    fixPostBodyFormat();
+</script>
+<div id="google_ad_c1" class="c_ad_block"></div>
+<div id="under_post_news"></div>
+<div id="google_ad_c2" class="c_ad_block"></div>
+<div id="under_post_kb"></div>
+<div id="HistoryToday" class="c_ad_block"></div>
+<script type="text/javascript">
+$(function () {
+    loadNewsAndKb();
+    loadBlogSignature();
+    LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+    GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate);
+    loadOptUnderPost();
+    GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);
+    setTimeout(function () { incrementViewCount(cb_entryId); }, 200);
+});
+</script>
+</div>
+
+</div>
+</div>
+<div id="leftmenu">
+
+
+<h3>导航</h3>
+<ul>
+<li>
+<a id="MyLinks1_HomeLink" href="http://www.cnblogs.com/">博客园</a></li>
+<li>
+<a id="MyLinks1_MyHomeLink" class="two_words" href="http://www.cnblogs.com/xudong-bupt/">首页</a></li>
+<li>
+<a id="MyLinks1_NewPostLink" rel="nofollow" href="http://i.cnblogs.com/EditPosts.aspx?opt=1">新随笔</a></li>
+<li>
+<a id="MyLinks1_ContactLink" accesskey="9" class="two_words" rel="nofollow" href="http://msg.cnblogs.com/send/%E6%97%AD%E4%B8%9C%E7%9A%84%E5%8D%9A%E5%AE%A2">联系</a></li>
+<li>
+<a id="MyLinks1_Syndication" class="two_words" href="http://www.cnblogs.com/xudong-bupt/rss">订阅</a>
+<a id="MyLinks1_XMLLink" href="http://www.cnblogs.com/xudong-bupt/rss"><img src="http://www.cnblogs.com/images/xml.gif" alt="订阅" /></a>
+</li>
+<li>
+<a id="MyLinks1_Admin" class="two_words" rel="nofollow" href="http://i.cnblogs.com/">管理</a></li>
+</ul>
+
+<div id="blog-calendar" style="display:none"></div><script type="text/javascript">loadBlogDefaultCalendar();</script>
+<meta name="vs_showGrid" content="False">
+
+<h3>公告</h3>
+<div id="blog-news"></div><script type="text/javascript">loadBlogNews();</script>
+
+<div id="blog-sidecolumn"></div><script type="text/javascript">loadBlogSideColumn();</script>
+
+</div>
+</div>
+<div class="clear"></div>
+<div id="footer">
+
+<p id="footer">
+	Powered by: 
+	<br />
+	
+	<a id="Footer1_Hyperlink3" NAME="Hyperlink1" href="http://www.cnblogs.com/" style="font-family:Verdana;font-size:12px;">博客园</a>
+	<br />
+	Copyright &copy; 旭东的博客
+</p>
+</div>
+</div>
+
+<!--PageEndHtml Block Begin-->
+作者：旭东 出处： http://www.cnblogs.com/xudong-bupt/
+本文版权归作者和博客园共有，欢迎转载，但未经作者同意必须保留此段声明，且在文章页面明显位置给出原文连接，否则保留追究法律责任的权利。如果觉得还有帮助的话，可以点一下右下角的【推荐】，希望能够持续的为大家带来好的技术文章！想跟我一起进步么？那就【关注】我吧。
+<!--PageEndHtml Block End-->
+</body>
+</html>

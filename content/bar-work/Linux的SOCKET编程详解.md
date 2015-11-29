@@ -277,16 +277,18 @@ TCP协议通过三个报文段完成连接的建立，这个过程称为三次�
     14:13:01.415747 IP localhost.9502 > localhost.39870: Flags [P.], seq 1:19, ack 8, win 4096, options [nop,nop,TS val 255478182 ecr 255478182], length 18
     14:13:01.415757 IP localhost.39870 > localhost.9502: Flags [.], ack 19, win 4097, options [nop,nop,TS val 255478182 ecr 255478182], length 0
 
-114:12:45.104687 时间带有精确到微妙
-localhost.39870 > localhost.9502 表示通信的流向，39870是客户端，9502是服务器端
-[S] 表示这是一个SYN请求
-[S.] 表示这是一个SYN+ACK确认包: 
-[.] 表示这是一个ACT确认包， (client)SYN->(server)SYN->(client)ACT 就是3次握手过程
-[P] 表示这个是一个数据推送，可以是从服务器端向客户端推送，也可以从客户端向服务器端推
-[F] 表示这是一个FIN包，是关闭连接操作，client/server都有可能发起
-[R] 表示这是一个RST包，与F包作用相同，但RST表示连接关闭时，仍然有数据未被处理。可以理解为是强制切断连接
-win 4099 是指滑动窗口大小
-length 18指数据包的大小
+说明: 
+
+    114:12:45.104687 时间带有精确到微妙
+    localhost.39870 > localhost.9502 表示通信的流向，39870是客户端，9502是服务器端
+    [S] 表示这是一个SYN请求
+    [S.] 表示这是一个SYN+ACK确认包: 
+    [.] 表示这是一个ACT确认包， (client)SYN->(server)SYN->(client)ACT 就是3次握手过程
+    [P] 表示这个是一个数据推送，可以是从服务器端向客户端推送，也可以从客户端向服务器端推
+    [F] 表示这是一个FIN包，是关闭连接操作，client/server都有可能发起
+    [R] 表示这是一个RST包，与F包作用相同，但RST表示连接关闭时，仍然有数据未被处理。可以理解为是强制切断连接
+    win 4099 是指滑动窗口大小
+    length 18指数据包的大小
 
 
 
@@ -563,7 +565,280 @@ inet_pton 是Linux下IP地址转换函数，可以在将IP地址在“点分十�
 apt-get install libc6-dev安装。
 如果有了，但不在/usr/include/sys/目录下，手动把这个文件添加到这个目录下就可以了。
 
-(部分内容来自吴秦：http://www.cnblogs.com/skynet/archive/2010/12/12/1903949.html)
+
+ socket -server源码:
+
+server.c
+ 
+    ====================================================================
+     
+    #include <netinet/in.h>    // for sockaddr_in
+    #include <sys/types.h>    // for socket
+    #include <sys/socket.h>    // for socket
+    #include <stdio.h>        // for printf
+    #include <stdlib.h>        // for exit
+    #include <string.h>        // for bzero
+    /*
+    #include <sys/types.h>
+    #include <sys/stat.h>
+    #include <fcntl.h>
+    #include <unistd.h>
+    */
+    #define HELLO_WORLD_SERVER_PORT    6666 
+    #define LENGTH_OF_LISTEN_QUEUE 20
+    #define BUFFER_SIZE 1024
+    #define FILE_NAME_MAX_SIZE 512
+     
+    int main(int argc, char **argv)
+    {
+        //设置一个socket地址结构server_addr,代表服务器internet地址, 端口
+        struct sockaddr_in server_addr;
+        bzero(&server_addr,sizeof(server_addr)); //把一段内存区的内容全部设置为0
+        server_addr.sin_family = AF_INET;
+        server_addr.sin_addr.s_addr = htons(INADDR_ANY);
+        server_addr.sin_port = htons(HELLO_WORLD_SERVER_PORT);
+     
+        //创建用于internet的流协议(TCP)socket,用server_socket代表服务器socket
+        int server_socket = socket(PF_INET,SOCK_STREAM,0);
+        if( server_socket < 0)
+        {
+            printf("Create Socket Failed!");
+            exit(1);
+        }
+    { 
+       int opt =1;
+       setsockopt(server_socket,SOL_SOCKET,SO_REUSEADDR,&opt,sizeof(opt));
+    }
+         
+        //把socket和socket地址结构联系起来
+        if( bind(server_socket,(struct sockaddr*)&server_addr,sizeof(server_addr)))
+        {
+            printf("Server Bind Port : %d Failed!", HELLO_WORLD_SERVER_PORT); 
+            exit(1);
+        }
+     
+        //server_socket用于监听
+        if ( listen(server_socket, LENGTH_OF_LISTEN_QUEUE) )
+        {
+            printf("Server Listen Failed!"); 
+            exit(1);
+        }
+        while (1) //服务器端要一直运行
+        {
+            //定义客户端的socket地址结构client_addr
+            struct sockaddr_in client_addr;
+            socklen_t length = sizeof(client_addr);
+     
+            //接受一个到server_socket代表的socket的一个连接
+            //如果没有连接请求,就等待到有连接请求--这是accept函数的特性
+            //accept函数返回一个新的socket,这个socket(new_server_socket)用于同连接到的客户的通信
+            //new_server_socket代表了服务器和客户端之间的一个通信通道
+            //accept函数把连接到的客户端信息填写到客户端的socket地址结构client_addr中
+            int new_server_socket = accept(server_socket,(struct sockaddr*)&client_addr,&length);
+            if ( new_server_socket < 0)
+            {
+                printf("Server Accept Failed!\n");
+                break;
+            }
+             
+            char buffer[BUFFER_SIZE];
+            bzero(buffer, BUFFER_SIZE);
+            length = recv(new_server_socket,buffer,BUFFER_SIZE,0);
+            if (length < 0)
+            {
+                printf("Server Recieve Data Failed!\n");
+                break;
+            }
+            char file_name[FILE_NAME_MAX_SIZE+1];
+            bzero(file_name, FILE_NAME_MAX_SIZE+1);
+            strncpy(file_name, buffer, strlen(buffer)>FILE_NAME_MAX_SIZE?FILE_NAME_MAX_SIZE:strlen(buffer));
+    //        int fp = open(file_name, O_RDONLY);
+    //        if( fp < 0 )
+            printf("%s\n",file_name);
+            FILE * fp = fopen(file_name,"r");
+            if(NULL == fp )
+            {
+                printf("File:\t%s Not Found\n", file_name);
+            }
+            else
+            {
+                bzero(buffer, BUFFER_SIZE);
+                int file_block_length = 0;
+    //            while( (file_block_length = read(fp,buffer,BUFFER_SIZE))>0)
+                while( (file_block_length = fread(buffer,sizeof(char),BUFFER_SIZE,fp))>0)
+                {
+                    printf("file_block_length = %d\n",file_block_length);
+                    //发送buffer中的字符串到new_server_socket,实际是给客户端
+                    if(send(new_server_socket,buffer,file_block_length,0)<0)
+                    {
+                        printf("Send File:\t%s Failed\n", file_name);
+                        break;
+                    }
+                    bzero(buffer, BUFFER_SIZE);
+                }
+    //            close(fp);
+                fclose(fp);
+                printf("File:\t%s Transfer Finished\n",file_name);
+            }
+            //关闭与客户端的连接
+            close(new_server_socket);
+        }
+        //关闭监听用的socket
+        close(server_socket);
+        return 0;
+    }
+
+
+
+
+ socket-client源码:
+
+client.c
+     
+    #include <netinet/in.h>    // for sockaddr_in
+    #include <sys/types.h>    // for socket
+    #include <sys/socket.h>    // for socket
+    #include <stdio.h>        // for printf
+    #include <stdlib.h>        // for exit
+    #include <string.h>        // for bzero
+    /*
+    #include <sys/types.h>
+    #include <sys/stat.h>
+    #include <fcntl.h>
+    #include <unistd.h>
+    */
+     
+    #define HELLO_WORLD_SERVER_PORT    6666 
+    #define BUFFER_SIZE 1024
+    #define FILE_NAME_MAX_SIZE 512
+     
+    int main(int argc, char **argv)
+    {
+        if (argc != 2)
+        {
+            printf("Usage: ./%s ServerIPAddress\n",argv[0]);
+            exit(1);
+        }
+     
+        //设置一个socket地址结构client_addr,代表客户机internet地址, 端口
+        struct sockaddr_in client_addr;
+        bzero(&client_addr,sizeof(client_addr)); //把一段内存区的内容全部设置为0
+        client_addr.sin_family = AF_INET;    //internet协议族
+        client_addr.sin_addr.s_addr = htons(INADDR_ANY);//INADDR_ANY表示自动获取本机地址
+        client_addr.sin_port = htons(0);    //0表示让系统自动分配一个空闲端口
+        //创建用于internet的流协议(TCP)socket,用client_socket代表客户机socket
+        int client_socket = socket(AF_INET,SOCK_STREAM,0);
+        if( client_socket < 0)
+        {
+            printf("Create Socket Failed!\n");
+            exit(1);
+        }
+        //把客户机的socket和客户机的socket地址结构联系起来
+        if( bind(client_socket,(struct sockaddr*)&client_addr,sizeof(client_addr)))
+        {
+            printf("Client Bind Port Failed!\n"); 
+            exit(1);
+        }
+     
+        //设置一个socket地址结构server_addr,代表服务器的internet地址, 端口
+        struct sockaddr_in server_addr;
+        bzero(&server_addr,sizeof(server_addr));
+        server_addr.sin_family = AF_INET;
+        if(inet_aton(argv[1],&server_addr.sin_addr) == 0) //服务器的IP地址来自程序的参数
+        {
+            printf("Server IP Address Error!\n");
+            exit(1);
+        }
+        server_addr.sin_port = htons(HELLO_WORLD_SERVER_PORT);
+        socklen_t server_addr_length = sizeof(server_addr);
+        //向服务器发起连接,连接成功后client_socket代表了客户机和服务器的一个socket连接
+        if(connect(client_socket,(struct sockaddr*)&server_addr, server_addr_length) < 0)
+        {
+            printf("Can Not Connect To %s!\n",argv[1]);
+            exit(1);
+        }
+     
+        char file_name[FILE_NAME_MAX_SIZE+1];
+        bzero(file_name, FILE_NAME_MAX_SIZE+1);
+        printf("Please Input File Name On Server:\t");
+        scanf("%s", file_name);
+         
+        char buffer[BUFFER_SIZE];
+        bzero(buffer,BUFFER_SIZE);
+        strncpy(buffer, file_name, strlen(file_name)>BUFFER_SIZE?BUFFER_SIZE:strlen(file_name));
+        //向服务器发送buffer中的数据
+        send(client_socket,buffer,BUFFER_SIZE,0);
+     
+    //    int fp = open(file_name, O_WRONLY|O_CREAT);
+    //    if( fp < 0 )
+        FILE * fp = fopen(file_name,"w");
+        if(NULL == fp )
+        {
+            printf("File:\t%s Can Not Open To Write\n", file_name);
+            exit(1);
+        }
+         
+        //从服务器接收数据到buffer中
+        bzero(buffer,BUFFER_SIZE);
+        int length = 0;
+        while( length = recv(client_socket,buffer,BUFFER_SIZE,0))
+        {
+            if(length < 0)
+            {
+                printf("Recieve Data From Server %s Failed!\n", argv[1]);
+                break;
+            }
+    //        int write_length = write(fp, buffer,length);
+            int write_length = fwrite(buffer,sizeof(char),length,fp);
+            if (write_length<length)
+            {
+                printf("File:\t%s Write Failed\n", file_name);
+                break;
+            }
+            bzero(buffer,BUFFER_SIZE);    
+        }
+        printf("Recieve File:\t %s From Server[%s] Finished\n",file_name, argv[1]);
+         
+        close(fp);
+        //关闭socket
+        close(client_socket);
+        return 0;
+    }
+
+
+open等，fopen等说明:
+
+    某些注释部分，open,read,write被 fopen,fread,fwrite替换。
+     
+    说明一下：
+    fopen, fclose, fread, fwrite, fgetc, fgets, fputc, fputs, freopen, fseek, ftell, rewind等
+    缓冲文件系统
+    缓冲文件系统的特点是：在内存开辟一个“缓冲区”，为程序中的每一个文件使用，当执行读文件的操作时，
+    从磁盘文件将数据先读入内存“缓冲区”， 装满后再从内存“缓冲区”依此读入接收的变量。执行写文件的
+    操作时，先将数据写入内存“缓冲区”，待内存“缓冲区”装满后再写入文件。由此可以看出，内存 
+    “缓冲区”的大小，影响着实际操作外存的次数，内存“缓冲区”越大，则操作外存的次数就少，
+    执行速度就快、效率高。一般来说，文件“缓冲区”的大小随机器 而定。
+     
+    open, close, read, write, getc, getchar, putc, putchar 等
+    非缓冲文件系统
+    非缓冲文件系统是借助文件结构体指针来对文件进行管理，通过文件指针来对文件进行访问，既可以读写字符、
+    字符串、格式化数据，也可以读写二进制数 据。非缓冲文件系统依赖于操作系统，通过操作系统的功能对
+    文件进行读写，是系统级的输入输出，它不设文件结构体指针，只能读写二进制文件，但效率高、速度快，
+    由于ANSI标准不再包括非缓冲文件系统，因此建议大家最好不要选择它。
+     
+    open等属于低级IO，
+    fopen等是高级IO。
+     
+    open等返回一个文件描述符(用户程序区的)，
+    fopen等返回一个文件指针。
+     
+    open等无缓冲，fopen等有缓冲。
+     
+    fopen等是在open等的基础上扩充而来的，在大多数情况下，用fopen等。
+     
+    open 是系统调用 返回的是文件句柄，文件的句柄是文件在文件描述符表里的索引，
+    fopen是C的库函数，返回的是一个指向文件结构的指针。
+
 
 
 

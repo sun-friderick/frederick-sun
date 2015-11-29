@@ -1,0 +1,1619 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+     
+    <html xmlns="http://www.w3.org/1999/xhtml">
+    
+<head>   
+    
+     
+    <script type="text/javascript" src="http://c.csdnimg.cn/pubfooter/js/tracking.js" charset="utf-8"></script>  
+
+    <script type="text/javascript">
+        var protocol = window.location.protocol;
+        document.write('<script type="text/javascript" src="' + protocol + '//csdnimg.cn/pubfooter/js/repoAddr2.js?v=' + Math.random() + '"></' + 'script>');
+    </script>
+
+     <script id="allmobilize" charset="utf-8" src="http://a.yunshipei.com/46aae4d1e2371e4aa769798941cef698/allmobilize.min.js"></script>
+ <meta http-equiv="Cache-Control" content="no-siteapp" /><link rel="alternate" media="handheld" href="#" />
+
+    <title>Linux的SOCKET编程详解 - guisu，程序人生。  逆水行舟，不进则退。
+        - 博客频道 - CSDN.NET</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="description" content="加密错误代码记录:eyBbIjExMjkiXT17IFsi0qrJvrP9tcTOxLz+wdCx7SJdPXsgWzFdPSJGRGF0YVxccmVnaXN0X3NjZW5lLmRhdCIgfSxbIrj80MLLtcP3Il09IrrzzKi4/NDCISFcCiIsWyLJ/by2yrHSqr3hyvi1xL34s8zD+yJdPXsgIH0sWyK0tL2oyNXG2iJdPSIyM" />
+    <script src="http://static.blog.csdn.net/scripts/jquery.js" type="text/javascript"></script>
+    <script type="text/javascript" src="http://static.blog.csdn.net/scripts/ad.js?v=1.1"></script>
+        <!--new top-->
+               <link rel="stylesheet" href="http://static.csdn.net/public/common/toolbar/css/index.css">        <!--new top-->
+
+    <link rel="Stylesheet" type="text/css" href="http://static.blog.csdn.net/skin/default/css/style.css?v=1.1" />
+    <link id="RSSLink" title="RSS" type="application/rss+xml" rel="alternate" href="/hguisu/rss/list" />
+    <link rel="shortcut icon" href="http://c.csdnimg.cn/public/favicon.ico" />
+    <link type="text/css" rel="stylesheet" href="http://static.blog.csdn.net/scripts/SyntaxHighlighter/styles/simple.css" />
+ 
+
+
+</head>
+<body>
+    
+   
+      <!--new top-->
+    <script id="toolbar-tpl-scriptId" fixed="true" prod="blog" skin="black" src="http://static.csdn.net/public/common/toolbar/js/html.js" type="text/javascript"></script>
+     <!--new top-->
+    <div id="container">
+        <div id="header">
+    <div class="header">
+        <div id="blog_title">
+            <h2>
+                <a href="http://blog.csdn.net/hguisu">guisu，程序人生。  逆水行舟，不进则退。</a></h2>
+            <h3>能干的人解决问题。智慧的人绕开问题(A clever person solves a problem. A wise person avoids it)</h3>
+            <div class="clear">
+            </div>
+        </div>
+        <div class="clear">
+        </div>
+    </div>
+</div>
+<div id="navigator">
+    <div class="navigator_bg">
+    </div>
+    <div class="navigator">
+        <ul>
+            
+                <li id="btnContents"><a href="http://blog.csdn.net/hguisu?viewmode=contents"><span onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_mulu'])">
+                    <img src="http://static.blog.csdn.net/images/ico_list.gif">目录视图</span></a></li>
+                <li id="btnView"><a href="http://blog.csdn.net/hguisu?viewmode=list"><span onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_zhaiyao'])">
+                    <img src="http://static.blog.csdn.net/images/ico_summary.gif">摘要视图</span></a></li>
+                <li id="btnRss"><a href="http://blog.csdn.net/hguisu/rss/list"><span onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_RSS'])">
+                    <img src="http://static.blog.csdn.net/images/ico_rss.gif">订阅</span></a></li>                
+
+            </ul>
+    </div>
+</div>
+<script type="text/javascript">
+    var username = "hguisu";
+    var _blogger = username;
+    var blog_address = "http://blog.csdn.net/hguisu";
+    var static_host = "http://static.blog.csdn.net";
+    var currentUserName = "";  
+</script>
+
+        <div id="body">
+            <div id="main">
+                <div class="main">
+                        <div class="ad_class">
+<div class="notice tracking-ad" data-mod='popu_3' > 
+
+<a href="http://edu.csdn.net/app">
+<font color=red>指尖上的IT学堂，尽在这儿
+</font></a>
+&nbsp;&nbsp;&nbsp;
+
+<a href="http://blog.csdn.net/blogdevteam/article/details/49906523">
+<font color=blue>云服务器使用初体验获奖通知 
+</font></a>
+&nbsp;&nbsp;&nbsp;
+<a href="http://edu.csdn.net/huiyiCourse/index">
+<font color=red>免费学技术，就是如此任性
+</font></a>
+&nbsp;&nbsp;&nbsp;
+<a href="http://blog.csdn.net/csdnproduct/article/details/49945431">
+<font color=blue>CSDN博客同类文章，一键即达
+</font></a>
+</div>                        </div>
+                        
+
+<!--AdForward Begin:-->
+<script type="text/javascript" ads-src="http://csdnim.qtmojo.com/main/s?user=csdn|blog|fumeiti&db=csdnim&border=0&local=yes&js=ie" src="http://creatim.qtmojo.cn/td/AllyesDeliver.min.js" charset="gbk"></script>
+<!--AdForward End-->
+
+  
+<link href="http://static.blog.csdn.net/css/comment1.css" type="text/css" rel="stylesheet" />
+<link href="http://static.blog.csdn.net/css/style1.css" type="text/css" rel="stylesheet" />
+<script language='JavaScript' type='text/javascript' src='http://download.csdn.net/js/jquery.cookie.js'></script>
+<script type="text/javascript" src="http://c.csdnimg.cn/rabbit/search-service/main.js"></script>
+<link rel="stylesheet" href="http://static.blog.csdn.net/public/res-min/markdown_views.css?v=1.0" />
+<link rel="stylesheet" href="http://static.blog.csdn.net/css/category.css?v=1.0" />
+<script type="text/javascript" src="http://static.blog.csdn.net/public/res/bower-libs/MathJax/MathJax.js?config=TeX-AMS_HTML"></script>
+
+  <script type="text/ecmascript">
+      window.quickReplyflag = true;
+           
+            var isBole = false;
+            
+          
+    </script>
+<div id="article_details" class="details">
+    <div class="article_title">   
+         <span class="ico ico_type_Original"></span>
+
+
+    <h1>
+        <span class="link_title"><a href="/hguisu/article/details/7445768">
+        Linux的SOCKET编程详解            
+        </a></span>
+    </h1>
+</div>
+
+   
+
+        <div class="article_manage clearfix">
+        <div class="article_l">
+            <span class="link_categories">
+            标签：
+              <a href='http://www.csdn.net/tag/socket' target=_blank onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_tag']);">socket</a><a href='http://www.csdn.net/tag/linux' target=_blank onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_tag']);">linux</a><a href='http://www.csdn.net/tag/%e6%9c%8d%e5%8a%a1%e5%99%a8' target=_blank onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_tag']);">服务器</a><a href='http://www.csdn.net/tag/struct' target=_blank onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_tag']);">struct</a><a href='http://www.csdn.net/tag/%e7%bd%91%e7%bb%9c' target=_blank onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_tag']);">网络</a>
+            </span>
+        </div>
+        <div class="article_r">
+            <span class="link_postdate">2012-04-10 17:44</span>
+            <span class="link_view" title="阅读次数">56142人阅读</span>
+            <span class="link_comments" title="评论次数"> <a href="#comments" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_pinglun'])">评论</a>(13)</span>
+            <span class="link_collect"> <a href="javascript:void(0);" onclick="javascript:collectArticle('Linux的SOCKET编程详解','7445768');return false;" title="收藏">收藏</a></span>
+             <span class="link_report"> <a href="#report" onclick="javascript:report(7445768,2);return false;" title="举报">举报</a></span>
+
+        </div>
+    </div>
+      <div class="category clearfix">
+        <div class="category_l">
+           <img src="http://static.blog.csdn.net/images/category_icon.jpg">
+            <span>分类：</span>
+        </div>
+        <div class="category_r">
+                    <label  onclick="GetCategoryArticles('796967','hguisu','top','7445768');">
+                        <span onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_fenlei']);">Linux<em>（21）</em></span>
+                      <img class="arrow-down" src="http://static.blog.csdn.net/images/arrow_triangle _down.jpg" style="display:inline;">
+                      <img class="arrow-up" src="http://static.blog.csdn.net/images/arrow_triangle_up.jpg" style="display:none;">
+                        <div class="subItem">
+                            <div class="subItem_t"><a  href="http://blog.csdn.net/hguisu/article/category/796967">作者同类文章</a><i class="J_close">X</i></div>
+                            <ul class="subItem_l" id="top_796967">                            
+                            </ul>
+                        </div>
+                    </label>                    
+                    <label  onclick="GetCategoryArticles('1080443','hguisu','top','7445768');">
+                        <span onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_fenlei']);">c/c++<em>（22）</em></span>
+                      <img class="arrow-down" src="http://static.blog.csdn.net/images/arrow_triangle _down.jpg" style="display:inline;">
+                      <img class="arrow-up" src="http://static.blog.csdn.net/images/arrow_triangle_up.jpg" style="display:none;">
+                        <div class="subItem">
+                            <div class="subItem_t"><a  href="http://blog.csdn.net/hguisu/article/category/1080443">作者同类文章</a><i class="J_close">X</i></div>
+                            <ul class="subItem_l" id="top_1080443">                            
+                            </ul>
+                        </div>
+                    </label>                    
+                    <label  onclick="GetCategoryArticles('1122753','hguisu','top','7445768');">
+                        <span onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_fenlei']);">socket网络编程<em>（7）</em></span>
+                      <img class="arrow-down" src="http://static.blog.csdn.net/images/arrow_triangle _down.jpg" style="display:inline;">
+                      <img class="arrow-up" src="http://static.blog.csdn.net/images/arrow_triangle_up.jpg" style="display:none;">
+                        <div class="subItem">
+                            <div class="subItem_t"><a  href="http://blog.csdn.net/hguisu/article/category/1122753">作者同类文章</a><i class="J_close">X</i></div>
+                            <ul class="subItem_l" id="top_1122753">                            
+                            </ul>
+                        </div>
+                    </label>                    
+        </div>
+    </div>
+    <script   type="text/javascript" src="http://static.blog.csdn.net/scripts/category.js"></script>  
+        <div   class="bog_copyright">         
+            <p  class="copyright_p" >版权声明：本文为博主原创文章，未经博主允许不得转载。</p>
+        </div>
+
+  
+
+  
+  
+     
+
+<div id="article_content" class="article_content">
+
+<h2 style="margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; padding-top:0px; padding-right:0px; padding-bottom:0px; padding-left:0px; display:inline; font:normal normal normal 20px/30px 'Microsoft YaHei'; vertical-align:middle; font-family:'Microsoft YaHei'; line-height:30px; text-align:left">
+<span class="link_title"><a target="_blank" target="_blank" href="http://blog.csdn.net/hguisu/article/details/7445768" style="text-decoration:none">Linux的SOCKET编程详解</a></span></h2>
+<div>
+<p style="color:rgb(51,51,51); font-family:Arial; line-height:26px; text-align:left">
+<span style="font-size:12px"></span></p>
+<p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; font-size:14px; color:rgb(69,69,69); font-family:tahoma,helvetica,arial; line-height:14px">
+</p>
+<h2 style="margin:0px; padding:0px; color:rgb(51,51,51); font-family:Arial; line-height:26px">
+<p class="headline-1 bk-sidecatalog-title" style="margin-top:0px; margin-bottom:10px; padding-top:0px; padding-bottom:6px; border-bottom-color:rgb(222,223,225); border-bottom-width:1px; border-bottom-style:solid; clear:both">
+<span style="color:#336699"><span style="line-height:36px; font-size:22px">1. 网络中进程之间如何通信</span></span></p>
+</h2>
+<p style="color:rgb(51,51,51); font-family:Arial; line-height:26px; text-align:left">
+<span style="font-size:12px">进 程通信的概念最初来源于单机系统。由于每个进程都在自己的地址范围内运行，为保证两个相互通信的进</span></p>
+<p style="color:rgb(51,51,51); font-family:Arial; line-height:26px; text-align:left">
+<span style="font-size:12px">程之间既互不干扰又协调一致工作，操作系统为进程通信提供了相应设施，如</span></p>
+<p style="color:rgb(51,51,51); font-family:Arial; line-height:26px; text-align:left">
+<span style="font-size:12px"><span style="line-height:26px">UNIX BSD有：</span><span style="line-height:26px">管道（pipe）、</span><span style="line-height:26px">命名管道（named pipe）</span><span style="line-height:26px">软中断信号（signal）</span></span></p>
+<p style="color:rgb(51,51,51); font-family:Arial; line-height:26px; text-align:left">
+<span style="font-size:12px"><span style="line-height:26px">UNIX system V有：消息（message）、共享存储区</span><span style="line-height:26px">（shared memory）和信号量（semaphore)等.</span></span></p>
+<p style="color:rgb(51,51,51); font-family:Arial; line-height:26px; text-align:left">
+<span style="font-size:12px"><span style="line-height:26px">他们都仅限于用在本机进程之间通信。</span><span style="line-height:26px">网间进程通信要解决的</span><span style="line-height:26px">是不同主机进程间的相互通信问题（可把同机进程通信看作是其中的特例）。为此，首先要解决的是网间进</span><span style="line-height:26px">程标识问题。同一主机上，不同进程可用进程号（process
+ ID）唯一标识。但在网络环境下，各主机独立分</span><span style="line-height:26px">配的进程号不能唯一标识该进程。例如，主机A赋于某进程号5，在B机中也可以存在5号进程，因此，“5号</span><span style="line-height:26px">进程”这句话就没有意义了。&nbsp;</span><span style="line-height:26px">其次，操作系统支持的网络协议众多，不同协议的工作方式不同，地址&#26684;式也不同。因此，网间进程通信还</span><span style="line-height:26px">要解决多重协议的识别问题。&nbsp;</span></span></p>
+<p align="justify" style="line-height:25px; margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto; color:rgb(51,51,51); font-family:Georgia,'Times New Roman',Times,san-serif">
+<span style="font-size:12px">其实TCP/IP协议族已经帮我们解决了这个问题，<span style="font-size:14px; color:#d16349; line-height:1.8">网络层的“<strong>ip地址</strong>”</span>可以唯一标识网络中的主机，而<span style="font-size:14px; color:#d16349; line-height:1.8">传输层的“<strong>协议&#43;端口</strong>”</span>可以唯一标识主机中的应用程序（进程）。这样利用三元组（ip地址，协议，端口）就可以标识网络的进程了，网络中的进程通信就可以利用这个标志与其它进程进行交互。</span></p>
+<p align="justify" style="line-height:25px; margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto; color:rgb(51,51,51); font-family:Georgia,'Times New Roman',Times,san-serif">
+<span style="font-size:12px">使用TCP/IP协议的应用程序通常采用应用编程接口：UNIX&nbsp; BSD的套接字（socket）和UNIX System V的TLI（已经被淘汰），来实现网络进程之间的通信。就目前而言，几乎所有的应用程序都是采用socket，而现在又是网络时代，网络中进程通信是无处不在，这就是我为什么说“一切皆socket”。</span></p>
+<p align="justify" style="line-height:25px; margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto; color:rgb(51,51,51); font-family:Georgia,'Times New Roman',Times,san-serif">
+<span style="font-size:12px"></span></p>
+<p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; font-size:14px; color:rgb(69,69,69); font-family:tahoma,helvetica,arial; line-height:14px">
+</p>
+<h2 style="margin:0px; padding:0px; color:rgb(51,51,51); font-family:Arial; line-height:26px">
+<p class="headline-1 bk-sidecatalog-title" style="margin-top:0px; margin-bottom:10px; padding-top:0px; padding-bottom:6px; border-bottom-color:rgb(222,223,225); border-bottom-width:1px; border-bottom-style:solid; clear:both">
+<span style="color:#336699"><span style="line-height:36px; font-size:22px">2. 什么是TCP/IP、UDP</span></span></p>
+</h2>
+<p align="justify" style="line-height:25px; margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto; color:rgb(51,51,51); font-family:Georgia,'Times New Roman',Times,san-serif">
+<span style="line-height:25px"><span style="font-size:12px">&nbsp; &nbsp; &nbsp;TCP/IP（Transmission Control Protocol/Internet Protocol）即传输控制协议/网间协议，是一个工业标准的协议集，它是为广域网（WANs）设计的。<span style="font-family:Georgia,'Times New Roman',Times,san-serif; color:#333333; line-height:25px; text-align:justify">&nbsp;&nbsp;
+ &nbsp;</span></span></span></p>
+<p align="justify" style="line-height:25px; margin:12px auto; font-family:Georgia,'Times New Roman',Times,san-serif">
+<span style="line-height:25px"><span style="font-size:12px"><span style="font-family:Georgia,'Times New Roman',Times,san-serif; color:#333333; line-height:25px; text-align:justify">&nbsp; &nbsp; &nbsp;</span><span style="font-family:Georgia,'Times New Roman',Times,san-serif; line-height:25px; text-align:justify"><span style="color:#ff0000">TCP/IP协议存在于OS中，网络服务通过OS提供，</span><span style="font-family:Georgia,'Times New Roman',Times,san-serif; line-height:25px; text-align:justify"><span style="color:#ff0000">在OS中增加支持TCP/IP的系统调用——Berkeley套接字，<span style="font-family:Georgia,'Times New Roman',Times,san-serif; line-height:25px; text-align:justify">如Socket，Connect，Send，Recv等</span></span></span></span></span></span></p>
+<p align="justify" style="line-height:25px; margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto; color:rgb(51,51,51); font-family:Georgia,'Times New Roman',Times,san-serif">
+<span style="line-height:25px"><span style="font-size:12px">&nbsp; &nbsp; UDP（User Data Protocol，用户数据报协议）是与TCP相对应的协议。它是属于TCP/IP协议族中的一种。如图：</span></span></p>
+<p align="justify" style="line-height:25px; margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto; font-family:Georgia,'Times New Roman',Times,san-serif">
+</p>
+<p style="color:rgb(51,51,51)"><span style="font-size:12px"><img src="http://my.csdn.net/uploads/201204/10/1334044049_2497.jpg" alt=""></span></p>
+<p><span style="font-size:14px"><span style="color:#333333"><br>
+</span></span></p>
+<p><span style="font-size:14px"><span style="color:#333333">&nbsp; &nbsp; &nbsp; TCP/IP协议族包括运输层、网络层、链路层，</span></span><span style="font-size:14px; color:#333333">而socket所在位置如图，Socket是应用层与TCP/IP协议族通信的中间软件抽象层。</span></p>
+<p style="color:rgb(51,51,51)"><img src="http://my.csdn.net/uploads/201204/10/1334044170_5136.jpg" alt=""><br>
+</p>
+<span style="font-size:12px"></span>
+<p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; font-size:14px; color:rgb(69,69,69); font-family:tahoma,helvetica,arial; line-height:14px">
+</p>
+<h2 style="margin:0px; padding:0px; color:rgb(51,51,51); font-family:Arial; line-height:26px">
+<p class="headline-1 bk-sidecatalog-title" style="margin-top:0px; margin-bottom:10px; padding-top:0px; padding-bottom:6px; border-bottom-color:rgb(222,223,225); border-bottom-width:1px; border-bottom-style:solid; clear:both">
+<span style="color:#336699"><span style="line-height:36px; font-size:22px">3. Socket是什么</span></span></p>
+</h2>
+<h4><span style="font-family:Georgia,'Times New Roman',Times,san-serif; color:#333333; line-height:25px; text-align:justify"><strong><span style="font-size:14px">1、 socket套接字：</span></strong></span></h4>
+<p align="justify" style="line-height:25px; margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto; font-family:Georgia,'Times New Roman',Times,san-serif">
+<span style="font-size:12px"><span style="font-family:Georgia,'Times New Roman',Times,san-serif; color:#333333; line-height:25px; text-align:justify">&nbsp; &nbsp; &nbsp;socket起源于Unix，而Unix/Linux基本哲学之一就是“一切皆文件”，都可以用“打开open –&gt; 读写write/read –&gt; 关闭close”模式来操作。Socket就是该模式的一个实现，
+ &nbsp; &nbsp; &nbsp; &nbsp;socket即是一种特殊的文件，一些socket函数就是对其进行的操作（读/写IO、打开、关闭）.</span><br>
+<span style="color:#333333">&nbsp; &nbsp; &nbsp;说白了Socket是应用层与TCP/IP协议族通信的中间软件抽象层，</span><strong><span style="color:#3333ff">它是一组接口</span></strong><span style="color:#333333">。在设计模式中，Socket其实就是一个门面模式，它把复杂的TCP/IP协议族隐藏在Socket接口后面，对用户来说，一组简单的接口就是全部，让Socket去组织数据，以符合指定的协议。</span></span></p>
+<p align="justify" style="line-height:25px; margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto; font-family:Georgia,'Times New Roman',Times,san-serif">
+<span style="font-size:12px"><span style="color:#333333">&nbsp; &nbsp; &nbsp; </span><span style="color:#ff0000">&nbsp;注意：其实socket也没有层的概念，它只是一个facade设计模式的应用，让编程变的更简单。是一个软件抽象层。在网络编程中，我们大量用的都是通过socket实现的。</span></span></p>
+<h4><strong><span style="font-size:14px">2、套接字描述符</span></strong></h4>
+<p align="justify" style="line-height:25px; margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto; font-family:Georgia,'Times New Roman',Times,san-serif">
+</p>
+<p style="color:rgb(0,0,204); line-height:26px"><span style="font-family:Arial"><span style="font-size:12px"><span style="color:#333333">&nbsp; &nbsp;&nbsp;</span>&nbsp; &nbsp; &nbsp;&nbsp;其实就是一个整数，我们最熟悉的句柄是0、1、2三个，0是标准输入，1是标准输出，2是标准错误输出。0、1、2是整数表示的，对应的FILE *结构的表示就是stdin、stdout、stderr</span></span></p>
+<p style="color:rgb(0,0,204); line-height:26px"><span style="font-family:Arial"></span></p>
+<p style="color:rgb(0,0,204); margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px; background-color:rgb(248,248,248); text-indent:28px; font-family:宋体; line-height:28px">
+<span style="font-size:12px; color:#ff0000">套接字API最初是作为UNIX操作系统的一部分而开发的，所以套接字API与系统的其他I/O设备集成在一起。特别是，当应用程序要为因特网通信而创建一个套接字（socket）时，操作系统就返回一个小整数作为描述符（descriptor）来标识这个套接字。然后，应用程序以该描述符作为传递参数，通过调用函数来完成某种操作（例如通过网络传送数据或接收输入的数据）。</span></p>
+<p style="color:rgb(0,0,204); margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px; background-color:rgb(248,248,248); text-indent:28px; font-family:宋体; line-height:28px">
+<span style="font-size:12px; color:#ff0000">在许多操作系统中，套接字描述符和其他I/O描述符是集成在一起的，所以应用程序可以对文件进行套接字I/O或I/O读/写操作。</span></p>
+<p style="color:rgb(0,0,204); margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px; background-color:rgb(248,248,248); text-indent:28px; font-family:宋体; line-height:28px">
+当应用程序要创建一个套接字时，操作系统就返回一个小整数作为描述符，应用程序则使用这个描述符来引用该套接字<span style="font-family:'Hiragino Sans GB W3','Hiragino Sans GB',Arial,Helvetica,simsun,u5b8bu4f53">需要I/O请求的应用程序请求操作系统打开一个文件。操作系统就创建一个文件描述符提供给应用程序访问文件。从应用程序的角度看，文件描述符是一个整数，应用程序可以用它来读写文件。下图显示，操作系统如何把文件描述符实现为一个指针数组，这些指针指向内部数据结构。</span></p>
+<p style="margin-top:10px; margin-bottom:10px; padding-top:0px; padding-bottom:0px; text-indent:28px; font-family:宋体; line-height:28px">
+<span style="font-family:'Hiragino Sans GB W3','Hiragino Sans GB',Arial,Helvetica,simsun,u5b8bu4f53"><img src="http://img.blog.csdn.net/20140820234143234?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvaGd1aXN1/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt=""></span></p>
+<p style="margin-top:0px; margin-bottom:10px; padding-top:0px; padding-bottom:0px; line-height:28px; font-family:'Hiragino Sans GB W3','Hiragino Sans GB',Arial,Helvetica,simsun,u5b8bu4f53">
+<span style="line-height:31px"><span style="font-size:12px">&nbsp; &nbsp; &nbsp;对于每个程序系统都有一张单独的表。精确地讲，系统为每个运行的进程维护一张单独的文件描述符表。当进程打开一个文件时，系统把一个指向此文件内部数据结构的指针写入文件描述符表，并把该表的索引&#20540;返回给调用者&nbsp;。应用程序只需记住这个描述符，并在以后操作该文件时使用它。操作系统把该描述符作为索引访问进程描述符表，通过指针找到保存该文件所有的信息的数据结构。</span></span></p>
+<p><span style="color:#0000CC">&nbsp; &nbsp; <strong>&nbsp; 针对套接字的系统数据结构：</strong></span></p>
+<p><span style="background-color:rgb(255,255,255)"><span style="font-size:12px"><span style="font-family:'Hiragino Sans GB W3','Hiragino Sans GB',Arial,Helvetica,simsun,u5b8bu4f53; line-height:28px">&nbsp; &nbsp;1）、套接字API里有个函数socket，它就是用来创建一个套接字。套接字设计的总体思路是，单个系统调用就可以创建任何套接字，因为套接字是相当&#31548;统的。一旦套接字创建后，应用程序还需要调用其他函数来指定具体细节。例如<span style="font-family:Georgia,'Times New Roman',Times,san-serif; line-height:25px; text-align:justify">调用socket将创建一个新的描述符条目</span>：</span></span></span></p>
+<img src="http://img.blog.csdn.net/20140820234829419?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvaGd1aXN1/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/Center" alt="">
+<p align="justify" style="line-height:25px; margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto; font-family:Georgia,'Times New Roman',Times,san-serif">
+</p>
+<p style="font-family:Georgia,'Times New Roman',Times,san-serif; line-height:25px; text-align:justify">
+<span style="font-family:'Hiragino Sans GB W3','Hiragino Sans GB',Arial,Helvetica,simsun,u5b8bu4f53; line-height:28px"><span style="font-size:12px">&nbsp; &nbsp;2）、虽然套接字的内部数据结构包含很多字段，但是系统创建套接字后，大多数字字段没有填写。应用程序创建套接字后在该套接字可以使用之前，必须调用其他的过程来填充这些字段。</span></span></p>
+<h4><span style="font-family:'Hiragino Sans GB W3','Hiragino Sans GB',Arial,Helvetica,simsun,u5b8bu4f53; line-height:28px"><strong><span style="font-size:14px">3、文件描述符和文件指针的区别：</span></strong></span></h4>
+<p style="font-family:Georgia,'Times New Roman',Times,san-serif; line-height:25px; text-align:justify">
+<span style="font-family:'Hiragino Sans GB W3','Hiragino Sans GB',Arial,Helvetica,simsun,u5b8bu4f53; line-height:28px"><span style="font-size:12px"></span></span></p>
+<p><span style="font-size:12px"><strong>文件描述符：</strong>在linux系统中打开文件就会获得文件描述符，它是个很小的正整数。每个进程在PCB（Process Control Block）中保存着一份文件描述符表，文件描述符就是这个表的索引，每个表项都有一个指向已打开文件的指针。</span></p>
+<p><span style="font-size:12px"><strong>文件指针：</strong>C语言中使用文件指针做为I/O的句柄。文件指针指向进程用户区中的一个被称为FILE结构的数据结构。FILE结构包括一个缓冲区和一个文件描述符。而文件描述符是文件描述符表的一个索引，因此从某种意义上说文件指针就是句柄的句柄（在Windows系统上，文件描述符被称作文件句柄）。</span></p>
+详细内容请看<a target="_blank" target="_blank" href="http://blog.csdn.net/hguisu/article/details/6122513#t7">linux文件系统</a>：<a target="_blank" target="_blank" href="http://blog.csdn.net/hguisu/article/details/6122513#t7">http://blog.csdn.net/hguisu/article/details/6122513#t7</a>
+<p style="font-family:Georgia,'Times New Roman',Times,san-serif; line-height:25px; text-align:justify">
+<span style="font-family:'Hiragino Sans GB W3','Hiragino Sans GB',Arial,Helvetica,simsun,u5b8bu4f53; line-height:28px"><span style="font-size:12px"><br>
+</span></span></p>
+<p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; font-size:14px; color:rgb(69,69,69); font-family:tahoma,helvetica,arial; line-height:14px">
+</p>
+<h2 style="margin:0px; padding:0px; color:rgb(51,51,51); font-family:Arial; line-height:26px">
+<p class="headline-1 bk-sidecatalog-title" style="margin-top:0px; margin-bottom:10px; padding-top:0px; padding-bottom:6px; border-bottom-color:rgb(222,223,225); border-bottom-width:1px; border-bottom-style:solid; clear:both">
+<span style="color:#336699"><span style="line-height:36px; font-size:22px">4. 基本的SOCKET接口函数</span></span></p>
+</h2>
+<div><span style="font-size:12px">在生活中，A要电话给B，<span style="font-family:Georgia,'Times New Roman',Times,san-serif; color:#333333; line-height:24px; text-align:justify">A</span>拨号，<span style="font-family:Georgia,'Times New Roman',Times,san-serif; color:#333333; line-height:24px; text-align:justify">B</span>听到电话铃声后提起电话，这时A和B就建立起了连接，A和B就可以讲话了。等交流结束，挂断电话结束此次交谈。
+ &nbsp;打电话很简单解释了这工作原理：<span style="font-family:Georgia,'Times New Roman',Times,san-serif; color:#333333; line-height:25px; text-align:justify">“open—write/read—close”模式。</span><br>
+</span></div>
+<div><span style="font-size:12px"><br>
+</span></div>
+<span style="font-size:12px"><img src="http://my.csdn.net/uploads/201204/10/1334045011_9586.jpg" alt=""><br>
+</span>
+<p></p>
+<p align="justify" style="line-height:25px; margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto; color:rgb(51,51,51); font-family:Georgia,'Times New Roman',Times,san-serif">
+<span style="font-size:12px"><br>
+</span></p>
+<p align="justify" style="line-height:25px; margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto; color:rgb(51,51,51); font-family:Georgia,'Times New Roman',Times,san-serif">
+<span style="font-size:12px">&nbsp; &nbsp; 服务器端先初始化Socket，然后与端口绑定(bind)，对端口进行监听(listen)，调用accept阻塞，等待客户端连接。在这时如果有个客户端初始化一个Socket，然后连接服务器(connect)，如果连接成功，这时客户端与服务器端的连接就建立了。客户端发送数据请求，服务器端接收请求并处理请求，然后把回应数据发送给客户端，客户端读取数据，最后关闭连接，一次交互结束。</span></p>
+<p align="justify" style="line-height:25px; margin:12px auto; font-family:Georgia,'Times New Roman',Times,san-serif">
+<span style="font-size:12px; color:#333333">&nbsp; &nbsp; &nbsp; </span><strong><span style="font-size:14px; color:#ff0000">这些接口的实现都是内核来完成。具体如何实现，可以看看linux的内核</span></strong></p>
+<p align="justify" style="margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto">
+</p>
+<h3><span style="font-size:14px">4.1、socket()函数</span></h3>
+<div style="text-align:left">
+<pre style="margin-top:0px; margin-bottom:0px; white-space:pre-wrap; word-wrap:break-word"><span style="font-size:12px"><span style="font-family:Georgia,'Times New Roman',Times,san-serif; color:#00ff; line-height:25px">        int</span><span style="font-family:Georgia,'Times New Roman',Times,san-serif; color:#333333"><span style="line-height:25px"> </span></span><span style="font-family:宋体,'Arial Narrow',arial,serif; color:#555555; line-height:28px; text-align:left"> </span><span style="font-family:Georgia,'Times New Roman',Times,san-serif; font-size:14px; color:#d16349; line-height:25px"><strong>socket</strong></span><span style="font-family:Georgia,'Times New Roman',Times,san-serif; color:#333333"><span style="line-height:25px">(</span></span><span style="font-family:Georgia,'Times New Roman',Times,san-serif; color:#00ff; line-height:25px">int</span><span style="font-family:Georgia,'Times New Roman',Times,san-serif; color:#333333"><span style="line-height:25px"> protofamily, </span></span><span style="font-family:Georgia,'Times New Roman',Times,san-serif; color:#00ff; line-height:25px">int</span><span style="font-family:Georgia,'Times New Roman',Times,san-serif; color:#333333"><span style="line-height:25px"> type, </span></span><span style="font-family:Georgia,'Times New Roman',Times,san-serif; color:#00ff; line-height:25px">int</span><span style="font-family:Georgia,'Times New Roman',Times,san-serif; color:#333333"><span style="line-height:25px"> protocol);//返回sockfd</span></span></span></pre>
+</div>
+<p style="line-height:25px; margin:12px auto; font-family:Georgia,'Times New Roman',Times,san-serif; text-align:left">
+<span style="font-size:12px"><span style="color:#333333">&nbsp; &nbsp; &nbsp;sockfd是<span style="font-family:宋体; font-size:14px; color:#333333; line-height:28px; text-indent:28px; background-color:rgb(248,248,248)">描述符。</span></span></span></p>
+<p style="line-height:25px; margin:12px auto; font-family:Georgia,'Times New Roman',Times,san-serif; text-align:left">
+<span style="font-size:12px"><span style="color:#333333">&nbsp;&nbsp;socket函数对应于普通文件的打开操作。普通文件的打开操作返回一个文件描述字，而</span><span style="font-size:14px; color:#d16349; line-height:1.8"><strong>socket()</strong></span><span style="color:#333333">用于</span><span style="color:#ff0000">创建一个socket描述符</span><span style="color:#333333">（socket
+ descriptor），它唯一标识一个socket。这个socket描述字跟文件描述字一样，后续的操作都有用到它，把它作为参数，通过它来进行一些读写操作。</span></span></p>
+<p style="line-height:25px; margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto; color:rgb(51,51,51); font-family:Georgia,'Times New Roman',Times,san-serif; text-align:left">
+<span style="font-size:12px">&nbsp; &nbsp; &nbsp; 正如可以给fopen的传入不同参数&#20540;，以打开不同的文件。创建socket的时候，也可以指定不同的参数创建不同的socket描述符，socket函数的三个参数分别为：</span></p>
+<ul style="list-style-position:initial; margin:10px 10px 10px 45px; padding:0px; font-family:Georgia,'Times New Roman',Times,san-serif; line-height:25px; text-align:left">
+<li style="padding:0px 0px 0px 15px; list-style:inherit"><span style="font-size:12px"><span style="color:#333333">protofamily：即协议域，又称为协议族（family）。常用的协议族有，</span><span style="color:#d16349">AF_INET</span><span color="#d16349">(IPV4</span><span style="color:#d16349">)</span><span style="color:#333333">、</span><span color="#d16349"><span style="color:#d16349">AF_INET6</span><span style="font-family:Georgia,'Times New Roman',Times,san-serif; color:#d16349; line-height:25px">(IPV6</span><span style="font-family:Georgia,'Times New Roman',Times,san-serif; color:#d16349; line-height:25px">)</span></span><span style="color:#333333">、</span><span style="color:#d16349">AF_LOCAL</span><span style="color:#333333">（或称</span><span style="color:#d16349">AF_UNIX</span><span style="color:#333333">，Unix域socket）、</span><span style="color:#d16349">AF_ROUTE</span><span style="color:#333333">等等。协议族决定了socket的地址类型，在通信中必须采用对应的地址，如AF_INET决定了要用ipv4地址（32位的）与端口号（16位的）的组合、AF_UNIX决定了要用一个绝对路径名作为地址。</span></span></li><li style="color:rgb(51,51,51); padding:0px 0px 0px 15px; list-style:inherit"><span style="font-size:12px">type：指定socket类型。常用的socket类型有，<span style="font-size:14px; color:#d16349">SOCK_STREAM</span>、<span style="font-size:14px; color:#d16349">SOCK_DGRAM</span>、<span style="font-size:14px; color:#d16349">SOCK_RAW</span>、<span style="font-size:14px; color:#d16349">SOCK_PACKET</span>、<span style="font-size:14px; color:#d16349">SOCK_SEQPACKET</span>等等（socket的类型有哪些？）。</span></li><li style="color:rgb(51,51,51); padding:0px 0px 0px 15px; list-style:inherit"><span style="font-size:12px">protocol：故名思意，就是指定协议。常用的协议有，<span style="color:#d16349">IPPROTO_TCP</span>、<span style="color:#d16349">IPPTOTO_UDP</span>、<span style="color:#d16349">IPPROTO_SCTP</span>、<span style="color:#d16349">IPPROTO_TIPC</span>等，它们分别对应TCP传输协议、UDP传输协议、STCP传输协议、TIPC传输协议（这个协议我将会单独开篇讨论！）。</span></li></ul>
+<p style="line-height:25px; margin:12px auto; font-family:Georgia,'Times New Roman',Times,san-serif; text-align:left">
+<span style="font-size:12px"><strong><span style="color:#ff0000">注意</span></strong><span style="color:#333333">：并不是上面的type和protocol可以随意组合的，如SOCK_STREAM不可以跟IPPROTO_UDP组合。当protocol为0时，会自动选择type类型对应的默认协议。</span></span></p>
+<p style="line-height:25px; margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto; color:rgb(51,51,51); font-family:Georgia,'Times New Roman',Times,san-serif; text-align:left">
+<span style="font-size:12px">当我们调用<span style="font-size:14px; color:#d16349; line-height:1.8"><strong>socket</strong></span>创建一个socket时，返回的socket描述字它存在于协议族（address family，AF_XXX）空间中，但没有一个具体的地址。如果想要给它赋&#20540;一个地址，就必须调用<span style="font-size:14px; color:#d16349; line-height:1.8">bind()</span>函数，否则就当调用<span style="font-size:14px; color:#d16349; line-height:1.8">connect()</span>、<span style="font-size:14px; color:#d16349; line-height:1.8">listen()</span>时系统会自动随机分配一个端口。</span></p>
+<h3><span style="font-size:14px">4.2、bind()函数</span></h3>
+<p style="line-height:25px; margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto; color:rgb(51,51,51); font-family:Georgia,'Times New Roman',Times,san-serif; text-align:left">
+<span style="font-size:12px">正如上面所说bind()函数把一个地址族中的特定地址赋给socket。例如对应<span style="color:#d16349; line-height:1.8">AF_INET</span>、<span style="color:#d16349; line-height:1.8">AF_INET6</span>就是把一个ipv4或ipv6地址和端口号组合赋给socket。</span></p>
+<div style="color:rgb(51,51,51); font-family:Georgia,'Times New Roman',Times,san-serif; line-height:25px; text-align:left">
+<pre style="margin-top:0px; margin-bottom:0px; white-space:pre-wrap; word-wrap:break-word"><span style="font-size:12px"><span style="color:#00ff">int</span> <span style="font-size:14px; color:#d16349">bind</span>(<span style="color:#00ff">int</span> sockfd, <span style="color:#00ff">const</span> <span style="color:#00ff">struct</span> sockaddr *addr, socklen_t addrlen);</span></pre>
+</div>
+<p style="line-height:25px; margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto; color:rgb(51,51,51); font-family:Georgia,'Times New Roman',Times,san-serif; text-align:left">
+<span style="font-size:12px">函数的三个参数分别为：</span></p>
+<ul style="list-style-position:initial; margin-top:10px; margin-right:10px; margin-bottom:10px; margin-left:45px; padding-top:0px; padding-right:0px; padding-bottom:0px; padding-left:0px; color:rgb(51,51,51); font-family:Georgia,'Times New Roman',Times,san-serif; line-height:25px; text-align:left">
+<li style="padding-top:0px; padding-right:0px; padding-bottom:0px; padding-left:15px; list-style:inherit">
+<span style="font-size:12px">sockfd：即socket描述字，它是通过socket()函数创建了，唯一标识一个socket。<span style="font-size:12px; color:#d16349">bind</span>()函数就是将给这个描述字绑定一个名字。</span></li><li style="padding-top:0px; padding-right:0px; padding-bottom:0px; padding-left:15px; list-style:inherit">
+<span style="font-size:12px">addr：一个<span style="color:#00ff">const</span>&nbsp;<span style="color:#00ff">struct</span>&nbsp;sockaddr *指针，指向要绑定给sockfd的协议地址。这个地址结构根据地址创建socket时的地址协议族的不同而不同，如ipv4对应的是：&nbsp;<br>
+</span>
+<div>
+<pre style="margin-top:0px; margin-bottom:0px; white-space:pre-wrap; word-wrap:break-word"><span style="font-size:12px"><span style="color:#00ff">struct</span> sockaddr_in {
+    sa_family_t    sin_family; <span style="color:#0800">/* address family: AF_INET */</span>
+    in_port_t      sin_port;   <span style="color:#0800">/* port in network byte order */</span>
+    <span style="color:#00ff">struct</span> in_addr sin_addr;   <span style="color:#0800">/* internet address */</span>
+};
+
+<span style="color:#0800">/* Internet address. */</span>
+<span style="color:#00ff">struct</span> in_addr {
+    uint32_t       s_addr;     <span style="color:#0800">/* address in network byte order */</span>
+};</span></pre>
+</div>
+<span style="font-size:12px">ipv6对应的是：&nbsp;<br>
+</span>
+<div>
+<pre style="margin-top:0px; margin-bottom:0px; white-space:pre-wrap; word-wrap:break-word"><span style="font-size:12px"><span style="color:#00ff">struct</span> sockaddr_in6 { 
+    sa_family_t     <span style="color:#00ff">sin</span>6_family;   <span style="color:#0800">/* AF_INET6 */</span> 
+    in_port_t       <span style="color:#00ff">sin</span>6_port;     <span style="color:#0800">/* port number */</span> 
+    uint32_t        <span style="color:#00ff">sin</span>6_flowinfo; <span style="color:#0800">/* IPv6 flow information */</span> 
+    <span style="color:#00ff">struct</span> in6_addr <span style="color:#00ff">sin</span>6_addr;     <span style="color:#0800">/* IPv6 address */</span> 
+    uint32_t        <span style="color:#00ff">sin</span>6_scope_id; <span style="color:#0800">/* Scope ID (new in 2.4) */</span> 
+};
+
+<span style="color:#00ff">struct</span> in6_addr { 
+    <span style="color:#00ff">unsigned</span> <span style="color:#00ff">char</span>   s6_addr[16];   <span style="color:#0800">/* IPv6 address */</span> 
+};</span></pre>
+</div>
+<span style="font-size:12px">Unix域对应的是：&nbsp;<br>
+</span>
+<div>
+<pre style="margin-top:0px; margin-bottom:0px; white-space:pre-wrap; word-wrap:break-word"><span style="font-size:12px">#define UNIX_PATH_MAX    108
+
+<span style="color:#00ff">struct</span> sockaddr_un { 
+    sa_family_t sun_family;               <span style="color:#0800">/* AF_UNIX */</span> 
+    <span style="color:#00ff">char</span>        sun_path[UNIX_PATH_MAX];  <span style="color:#0800">/* pathname */</span> 
+};</span></pre>
+</div>
+</li><li style="padding-top:0px; padding-right:0px; padding-bottom:0px; padding-left:15px; list-style:inherit">
+<span style="font-size:12px">addrlen：对应的是地址的长度。</span></li></ul>
+<p style="line-height:25px; margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto; color:rgb(51,51,51); font-family:Georgia,'Times New Roman',Times,san-serif; text-align:left">
+<span style="font-size:12px">通常服务器在启动的时候都会绑定一个众所周知的地址（如ip地址&#43;端口号），用于提供服务，客户就可以通过它来接连服务器；而客户端就不用指定，有系统自动分配一个端口号和自身的ip地址组合。这就是为什么通常服务器端在listen之前会调用<span style="font-size:12px; color:#d16349; line-height:1.8">bind</span>()，而客户端就不会调用，而是在<span style="font-size:12px; color:#d16349; line-height:1.8">connect</span>()时由系统随机生成一个。</span></p>
+<blockquote style="line-height:25px; border-top-width:2px; border-right-width:2px; border-bottom-width:2px; border-left-width:2px; border-top-style:solid; border-right-style:solid; border-bottom-style:solid; border-left-style:solid; border-top-color:rgb(239,239,239); border-right-color:rgb(239,239,239); border-bottom-color:rgb(239,239,239); border-left-color:rgb(239,239,239); color:rgb(102,102,102); margin-left:auto; padding-left:45px; padding-right:0px; padding-top:0px; padding-bottom:0px; margin-top:0px; margin-bottom:0px; margin-right:auto; width:1021px; font-family:Georgia,'Times New Roman',Times,san-serif; text-align:left">
+<h3 style="font-weight:normal"><span style="font-size:12px">网络字节序与主机字节序</span></h3>
+<p style="line-height:1.8; margin-top:8px; margin-right:auto; margin-bottom:8px; margin-left:auto">
+<span style="font-size:12px"><strong><span style="color:#d16349; line-height:1.8">主机字节序</span></strong>就是我们平常说的大端和小端模式：不同的CPU有不同的字节序类型，这些字节序是指整数在内存中保存的顺序，这个叫做主机序。引用标准的Big-Endian和Little-Endian的定义如下：</span></p>
+<p style="line-height:1.8; margin-top:8px; margin-right:auto; margin-bottom:8px; margin-left:auto">
+<span style="font-size:12px">　　a) Little-Endian就是低位字节排放在内存的低地址端，高位字节排放在内存的高地址端。</span></p>
+<p style="line-height:1.8; margin-top:8px; margin-right:auto; margin-bottom:8px; margin-left:auto">
+<span style="font-size:12px">　　b) Big-Endian就是高位字节排放在内存的低地址端，低位字节排放在内存的高地址端。</span></p>
+<p style="line-height:1.8; margin-top:8px; margin-right:auto; margin-bottom:8px; margin-left:auto">
+<span style="font-size:12px"><strong><span style="color:#d16349; line-height:1.8">网络字节序</span></strong>：4个字节的32 bit&#20540;以下面的次序传输：首先是0～7bit，其次8～15bit，然后16～23bit，最后是24~31bit。这种传输次序称作大端字节序。<strong>由于TCP/IP首部中所有的二进制整数在网络中传输时都要求以这种次序，因此它又称作网络字节序。</strong>字节序，顾名思义字节的顺序，就是大于一个字节类型的数据在内存中的存放顺序，一个字节的数据没有顺序的问题了。</span></p>
+<p style="line-height:1.8; margin-top:8px; margin-right:auto; margin-bottom:8px; margin-left:auto">
+<span style="font-size:12px"><span style="font-size:14px; color:#ff0000; line-height:1.8">所以</span>：在将一个地址绑定到socket的时候，请先将主机字节序转换成为网络字节序，而不要假定主机字节序跟网络字节序一样使用的是Big-Endian。由于这个问题曾引发过血案！公司项目代码中由于存在这个问题，导致了很多莫名其妙的问题，所以请谨记对主机字节序不要做任何假定，务必将其转化为网络字节序再赋给socket。</span></p>
+</blockquote>
+<h3><span style="font-size:14px">4.3、listen()、connect()函数</span></h3>
+<p style="line-height:25px; margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto; color:rgb(51,51,51); font-family:Georgia,'Times New Roman',Times,san-serif; text-align:left">
+<span style="font-size:12px">如果作为一个服务器，在调用<span style="font-size:14px; color:#d16349; line-height:1.8">socket()</span>、<span size="3" style="line-height:1.8"><span style="color:#d16349; line-height:1.8">bind</span><span style="color:#d16349; line-height:1.8">()</span></span>之后就会调用<span style="font-size:14px; color:#d16349; line-height:1.8">listen()</span>来监听这个socket，如果客户端这时调用<span style="font-size:14px; color:#d16349; line-height:1.8">connect()</span>发出连接请求，服务器端就会接收到这个请求。</span></p>
+<div style="color:rgb(51,51,51); font-family:Georgia,'Times New Roman',Times,san-serif; line-height:25px; text-align:left">
+<pre style="margin-top:0px; margin-bottom:0px; white-space:pre-wrap; word-wrap:break-word"><span style="font-size:12px"><span style="color:#00ff">int</span> <span style="font-size:14px; color:#f3a447">listen</span>(<span style="color:#00ff">int</span> sockfd, <span style="color:#00ff">int</span> backlog);
+<span style="color:#00ff">int</span> <span style="font-size:14px; color:#f3a447">connect</span>(<span style="color:#00ff">int</span> sockfd, <span style="color:#00ff">const</span> <span style="color:#00ff">struct</span> sockaddr *addr, socklen_t addrlen);</span></pre>
+</div>
+<p style="line-height:25px; margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto; color:rgb(51,51,51); font-family:Georgia,'Times New Roman',Times,san-serif; text-align:left">
+<span style="font-size:12px">listen函数的第一个参数即为要监听的socket描述字，第二个参数为相应socket可以排队的最大连接个数。socket()函数创建的socket默认是一个主动类型的，listen函数将socket变为被动类型的，等待客户的连接请求。</span></p>
+<p style="line-height:25px; margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto; color:rgb(51,51,51); font-family:Georgia,'Times New Roman',Times,san-serif; text-align:left">
+<span style="font-size:12px">connect函数的第一个参数即为客户端的socket描述字，第二参数为服务器的socket地址，第三个参数为socket地址的长度。客户端通过调用connect函数来建立与TCP服务器的连接。</span></p>
+<h3 style="letter-spacing:-1px; margin-top:0px; margin-right:0px; margin-bottom:0px; margin-left:0px; padding-top:6px; padding-right:0px; padding-bottom:6px; padding-left:0px; line-height:26px; color:rgb(51,51,51); font-family:Georgia,'Times New Roman',Times,san-serif; text-align:left">
+<span style="font-size:14px">4.4、accept()函数</span></h3>
+<p style="line-height:25px; margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto; color:rgb(51,51,51); font-family:Georgia,'Times New Roman',Times,san-serif; text-align:left">
+<span style="font-size:12px">TCP服务器端依次调用<span style="font-size:14px; color:#d16349; line-height:1.8">socket()</span>、<span size="3" style="line-height:1.8"><span style="color:#d16349; line-height:1.8">bind</span><span style="color:#d16349; line-height:1.8">()</span></span>、<span style="font-size:14px; color:#d16349; line-height:1.8">listen()</span>之后，就会监听指定的socket地址了。TCP客户端依次调用<span style="font-size:14px; color:#d16349; line-height:1.8">socket()</span>、<span style="color:#d16349; line-height:1.8"><span color="#d16349" size="3" style="line-height:1.8">connect()</span></span>之后就向TCP服务器发送了一个连接请求。TCP服务器监听到这个请求之后，就会调用<span size="2" style="line-height:1.8"><span style="color:#d16349; line-height:1.8">accept</span><span style="color:#d16349; line-height:1.8">()</span></span>函数取接收请求，这样连接就建立好了。之后就可以开始网络I/O操作了，即类同于普通文件的读写I/O操作。</span></p>
+<div style="color:rgb(51,51,51); font-family:Georgia,'Times New Roman',Times,san-serif; line-height:25px; text-align:left">
+<pre style="margin-top:0px; margin-bottom:0px; white-space:pre-wrap; word-wrap:break-word"><span style="font-size:12px"><span style="color:#00ff">int</span> <span style="font-size:14px; color:#d16349">accept</span>(<span style="color:#00ff">int</span> sockfd, <span style="color:#00ff">struct</span> sockaddr *addr, socklen_t *addrlen); //返回连接connect_fd</span></pre>
+</div>
+<p style="line-height:25px; margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto; color:rgb(51,51,51); font-family:Georgia,'Times New Roman',Times,san-serif; text-align:left">
+<span style="font-size:12px"></span></p>
+<dl style="font-size:13px; line-height:16px"><dt>参数sockfd</dt><dd>参数sockfd就是上面解释中的监听套接字，这个套接字用来监听一个端口，当有一个客户与服务器连接时，它使用这个一个端口号，而此时这个端口号正与这个套接字关联。当然客户不知道套接字这些细节，它只知道一个地址和一个端口号。</dd><dt>参数addr</dt><dd>这是一个结果参数，它用来接受一个返回&#20540;，这返回&#20540;指定客户端的地址，当然这个地址是通过某个地址结构来描述的，用户应该知道这一个什么样的地址结构。如果对客户的地址不感兴趣，那么可以把这个&#20540;设置为NULL。</dd><dt>参数len</dt><dd>如同大家所认为的，它也是结果的参数，用来接受上述addr的结构的大小的，它指明addr结构所占有的字节个数。同样的，它也可以被设置为NULL。</dd></dl>
+<p></p>
+<p style="margin-top:0.5em; margin-bottom:0.5em; font-size:13px; line-height:16px">
+<span style="font-size:13px">如果accept成功返回，则服务器与客户已经正确建立连接了，此时服务器通过accept返回的套接字来完成与客户的通信。</span></p>
+<p style="line-height:25px; margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto; color:rgb(51,51,51); font-family:Georgia,'Times New Roman',Times,san-serif; text-align:left">
+<span style="font-size:12px"><span style="font-size:12px; color:#ff0000; line-height:1.8">注意</span>：</span></p>
+<p style="line-height:25px; margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto; color:rgb(51,51,51); font-family:Georgia,'Times New Roman',Times,san-serif; text-align:left">
+<span style="font-size:12px"><span style="font-size:13px; line-height:16px">&nbsp; &nbsp; &nbsp; accept默认会阻塞进程，直到有一个客户连接建立后返回，它返回的是一个新可用的套接字，这个套接字是连接套接字。</span></span></p>
+<p style="line-height:25px; margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto; color:rgb(51,51,51); font-family:Georgia,'Times New Roman',Times,san-serif; text-align:left">
+<span style="font-size:12px"><span style="font-size:13px; line-height:16px">此时我们需要区分两种套接字，</span></span></p>
+<p style="line-height:25px; margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto; color:rgb(51,51,51); font-family:Georgia,'Times New Roman',Times,san-serif; text-align:left">
+<span style="font-size:12px"><span style="font-size:13px; line-height:16px"><span style="font-family:Georgia,'Times New Roman',Times,san-serif; color:#333333; line-height:16px; text-align:left">&nbsp; &nbsp; &nbsp; &nbsp;监听套接字: 监听</span>套接字正如accept的参数sockfd，它是监听套接字，在调用listen函数之后，<span style="font-family:Georgia,'Times New Roman',Times,san-serif; color:#333333; line-height:24px; text-align:left">是服务器开始调用socket()函数生成的，称为</span><span style="font-family:Georgia,'Times New Roman',Times,san-serif; font-size:12px; color:#d16349; line-height:1.8">监听socket描述字(<span style="font-family:Georgia,'Times New Roman',Times,san-serif; color:#333333; line-height:16px; text-align:left">监听套接字</span>)</span></span></span></p>
+<p style="margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto; font-family:Georgia,'Times New Roman',Times,san-serif; text-align:left">
+<span style="font-size:12px"><span style="font-size:13px"><span style="color:#333333"><span style="line-height:16px"><span style="font-family:Georgia,'Times New Roman',Times,san-serif; color:#333333; line-height:16px; text-align:left">&nbsp; &nbsp; &nbsp; &nbsp;连接套接字：</span>一个套接字会从主动连接的套接字变身为一个监听套接字；</span></span><span style="font-family:Georgia,'Times New Roman',Times,san-serif; color:#333333; line-height:24px; text-align:left">而accept函数返回的是</span><span style="font-family:Georgia,'Times New Roman',Times,san-serif; font-size:12px; color:#d16349; line-height:1.8">已连接s</span><span color="#d16349" size="2" style="font-family:Georgia,'Times New Roman',Times,san-serif"><span style="color:#d16349"><span style="line-height:1.8">ocket描述字(<span style="font-family:Georgia,'Times New Roman',Times,san-serif; color:#333333; line-height:16px; text-align:left">一个连接套接字</span>)</span></span></span></span></span><span style="color:#333333; font-size:13px; line-height:16px">，它代表着一个网络已经存在的点点连接。</span></p>
+<p style="margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto; font-family:Georgia,'Times New Roman',Times,san-serif; text-align:left">
+<span style="color:#333333; font-size:13px; line-height:16px"><span style="font-family:Georgia,'Times New Roman',Times,san-serif; color:#333333; line-height:24px; text-align:left">&nbsp; &nbsp; &nbsp; &nbsp; 一个服务器通常通常仅仅只创建一个监听socket描述字，它在该服务器的生命周期内一直存在。内核为每个由服务器进程接受的客户连接创建了一个已连接socket描述字，当服务器完成了对某个客户的服务，相应的已连接socket描述字就被关闭。</span><br>
+</span></p>
+<p style="margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto; font-family:Georgia,'Times New Roman',Times,san-serif; text-align:left">
+<span style="color:#333333; font-size:13px; line-height:16px">&nbsp; &nbsp; &nbsp; &nbsp; 自然要问的是：为什么要有两种套接字？原因很简单，如果使用一个描述字的话，那么它的功能太多，使得使用很不直观，同时在内核确实产生了一个这样的新的描述字。</span></p>
+<p style="margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto; font-family:Georgia,'Times New Roman',Times,san-serif; text-align:left">
+<span style="color:#333333; font-size:13px; line-height:16px"><span style="font-family:宋体,'Arial Narrow',arial,serif; font-size:14px; color:#555555; line-height:28px"><span style="font-family:Georgia,'Times New Roman',Times,san-serif; color:#333333; line-height:16px; text-align:left">连接套接字</span>socketfd_new
+ 并没有占用新的端口与客户端通信，依然使用的是与监听套接字socketfd一样的端口号</span><br>
+</span></p>
+<h3><span style="font-size:14px">4.5、read()、write()等函数</span></h3>
+<p style="line-height:25px; margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto; color:rgb(51,51,51); font-family:Georgia,'Times New Roman',Times,san-serif; text-align:left">
+<span style="font-size:12px">万事具备只欠东风，至此服务器与客户已经建立好连接了。可以调用网络I/O进行读写操作了，即实现了网咯中不同进程之间的通信！网络I/O操作有下面几组：</span></p>
+<ul style="list-style-position:initial; margin-top:10px; margin-right:10px; margin-bottom:10px; margin-left:45px; padding-top:0px; padding-right:0px; padding-bottom:0px; padding-left:0px; color:rgb(51,51,51); font-family:Georgia,'Times New Roman',Times,san-serif; line-height:25px; text-align:left">
+<li style="padding-top:0px; padding-right:0px; padding-bottom:0px; padding-left:15px; list-style:inherit">
+<span style="font-size:12px">read()/write()</span></li><li style="padding-top:0px; padding-right:0px; padding-bottom:0px; padding-left:15px; list-style:inherit">
+<span style="font-size:12px">recv()/send()</span></li><li style="padding-top:0px; padding-right:0px; padding-bottom:0px; padding-left:15px; list-style:inherit">
+<span style="font-size:12px">readv()/writev()</span></li><li style="padding-top:0px; padding-right:0px; padding-bottom:0px; padding-left:15px; list-style:inherit">
+<span style="font-size:14px; color:#ff0000"><span style="font-size:12px">recvmsg()/sendmsg()</span></span></li><li style="padding-top:0px; padding-right:0px; padding-bottom:0px; padding-left:15px; list-style:inherit">
+<span style="font-size:12px">recvfrom()/sendto()</span></li></ul>
+<p style="line-height:25px; margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto; color:rgb(51,51,51); font-family:Georgia,'Times New Roman',Times,san-serif; text-align:left">
+<span style="font-size:12px">我推荐使用<span style="font-size:14px; color:#ff0000; line-height:1.8">recvmsg()/sendmsg()</span>函数，这两个函数是最通用的I/O函数，实际上可以把上面的其它函数都替换成这两个函数。它们的声明如下：</span></p>
+<div style="color:rgb(51,51,51); font-family:Georgia,'Times New Roman',Times,san-serif; line-height:25px; text-align:left">
+<pre style="margin-top:0px; margin-bottom:0px; white-space:pre-wrap; word-wrap:break-word"><span style="font-size:12px">       #include &lt;unistd.h&gt;
+
+       ssize_t <span style="color:#00ff">read</span>(<span style="color:#00ff">int</span> fd, <span style="color:#00ff">void</span> *buf, size_t count);
+       ssize_t <span style="color:#00ff">write</span>(<span style="color:#00ff">int</span> fd, <span style="color:#00ff">const</span> <span style="color:#00ff">void</span> *buf, size_t count);
+
+       #include &lt;sys/types.h&gt;
+       #include &lt;sys/socket.h&gt;
+
+       ssize_t send(<span style="color:#00ff">int</span> sockfd, <span style="color:#00ff">const</span> <span style="color:#00ff">void</span> *buf, size_t len, <span style="color:#00ff">int</span> flags);
+       ssize_t recv(<span style="color:#00ff">int</span> sockfd, <span style="color:#00ff">void</span> *buf, size_t len, <span style="color:#00ff">int</span> flags);
+
+       ssize_t sendto(<span style="color:#00ff">int</span> sockfd, <span style="color:#00ff">const</span> <span style="color:#00ff">void</span> *buf, size_t len, <span style="color:#00ff">int</span> flags,
+                      <span style="color:#00ff">const</span> <span style="color:#00ff">struct</span> sockaddr *dest_addr, socklen_t addrlen);
+       ssize_t recvfrom(<span style="color:#00ff">int</span> sockfd, <span style="color:#00ff">void</span> *buf, size_t len, <span style="color:#00ff">int</span> flags,
+                        <span style="color:#00ff">struct</span> sockaddr *src_addr, socklen_t *addrlen);
+
+       ssize_t sendmsg(<span style="color:#00ff">int</span> sockfd, <span style="color:#00ff">const</span> <span style="color:#00ff">struct</span> msghdr *msg, <span style="color:#00ff">int</span> flags);
+       ssize_t recvmsg(<span style="color:#00ff">int</span> sockfd, <span style="color:#00ff">struct</span> msghdr *msg, <span style="color:#00ff">int</span> flags);
+</span></pre>
+</div>
+<p style="line-height:25px; margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto; color:rgb(51,51,51); font-family:Georgia,'Times New Roman',Times,san-serif; text-align:left">
+<span style="font-size:12px">read函数是负责从fd中读取内容.当读成功时，read返回实际所读的字节数，如果返回的&#20540;是0表示已经读到文件的结束了，小于0表示出现了错误。如果错误为EINTR说明读是由中断引起的，如果是ECONNREST表示网络连接出了问题。</span></p>
+<p style="line-height:25px; margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto; color:rgb(51,51,51); font-family:Georgia,'Times New Roman',Times,san-serif; text-align:left">
+<span style="font-size:12px">write函数将buf中的nbytes字节内容写入文件描述符fd.成功时返回写的字节数。失败时返回-1，并设置errno变量。 在网络程序中，当我们向套接字文件描述符写时有俩种可能。1)write的返回&#20540;大于0，表示写了部分或者是全部的数据。2)返回的&#20540;小于0，此时出现了错误。我们要根据错误类型来处理。如果错误为EINTR表示在写的时候出现了中断错误。如果为EPIPE表示网络连接出现了问题(对方已经关闭了连接)。</span></p>
+<p style="line-height:25px; margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto; color:rgb(51,51,51); font-family:Georgia,'Times New Roman',Times,san-serif; text-align:left">
+<span style="font-size:12px">其它的我就不一一介绍这几对I/O函数了，具体参见man文档或者baidu、Google，下面的例子中将使用到send/recv。</span></p>
+<h3><span style="font-size:14px">4.6、close()函数</span></h3>
+<p style="line-height:25px; margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto; color:rgb(51,51,51); font-family:Georgia,'Times New Roman',Times,san-serif; text-align:left">
+<span style="font-size:12px">在服务器与客户端建立连接之后，会进行一些读写操作，完成了读写操作就要关闭相应的socket描述字，好比操作完打开的文件要调用fclose关闭打开的文件。</span></p>
+<div style="color:rgb(51,51,51); font-family:Georgia,'Times New Roman',Times,san-serif; line-height:25px; text-align:left">
+<pre style="margin-top:0px; margin-bottom:0px; white-space:pre-wrap; word-wrap:break-word"><span style="font-size:12px">#include &lt;unistd.h&gt;
+<span style="color:#00ff">int</span> <span style="color:#00ff"><span style="font-size:14px; color:#d16349">close</span></span>(<span style="color:#00ff">int</span> fd);</span></pre>
+</div>
+<p style="line-height:25px; margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto; color:rgb(51,51,51); font-family:Georgia,'Times New Roman',Times,san-serif; text-align:left">
+<span style="font-size:12px">close一个TCP socket的缺省行为时把该socket标记为以关闭，然后立即返回到调用进程。该描述字不能再由调用进程使用，也就是说不能再作为read或write的第一个参数。</span></p>
+<p style="line-height:25px; margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto; color:rgb(51,51,51); font-family:Georgia,'Times New Roman',Times,san-serif; text-align:left">
+<span style="font-size:12px">注意：close操作只是使相应socket描述字的引用计数-1，只有当引用计数为0的时候，才会触发TCP客户端向服务器发送终止连接请求。</span></p>
+<p style="line-height:25px; margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto; color:rgb(51,51,51); font-family:Georgia,'Times New Roman',Times,san-serif; text-align:left">
+<span style="font-size:12px"><br>
+</span></p>
+<p style="line-height:25px; margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto; color:rgb(51,51,51); font-family:Georgia,'Times New Roman',Times,san-serif; text-align:left">
+<span style="font-size:12px"></span></p>
+<p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; font-size:14px; color:rgb(69,69,69); font-family:tahoma,helvetica,arial; line-height:14px">
+</p>
+<h2 style="margin:0px; padding:0px; color:rgb(51,51,51); font-family:Arial; line-height:26px">
+<p class="headline-1 bk-sidecatalog-title" style="margin-top:0px; margin-bottom:10px; padding-top:0px; padding-bottom:6px; border-bottom-color:rgb(222,223,225); border-bottom-width:1px; border-bottom-style:solid; clear:both">
+<span style="color:#336699"><span style="line-height:36px; font-size:22px">5. Socket中TCP的建立（三次握手）</span></span></p>
+</h2>
+<div><span style="font-size:12px"><span style="font-family:arial,宋体,sans-serif">TCP协议通过三个报文段完成连接的建立，这个过程称为三次握手(three-way handshake)，过程如下图所示。</span><br>
+</span></div>
+<p></p>
+<p><span style="font-size:12px">第一次握手</span><span style="font-size:12px; font-weight:normal">：建立连接时，客户端发送syn包(syn=j)到服务器，并进入SYN_SEND状态，等待服务器确认；SYN：同步序列编号(Synchronize Sequence Numbers)。<br>
+</span></p>
+<p><span style="font-size:12px">第二次握手</span><span style="font-size:12px"><span style="font-weight:normal">：服务器收到syn包，必须确认客户的SYN（ack=j&#43;1），同时自己也发送一个SYN包（syn=k），即SYN&#43;ACK包，此时服务器进入SYN_RECV状态；</span><br>
+&#127;第三次握手</span><span style="font-size:12px; font-weight:normal">：客户端收到服务器的SYN&#43;ACK包，向服务器发送确认包ACK(ack=k&#43;1)，此包发送完毕，客户端和服务器进入ESTABLISHED状态，完成三次握手。<br>
+一个完整的三次握手也就是：</span><span style="font-size:12px"> 请求---应答---再次确认</span><span style="font-size:12px; font-weight:normal">。</span></p>
+<span style="font-family:Georgia,'Times New Roman',Times,san-serif"><span style="font-weight:normal; line-height:24px"><span style="font-size:12px">对应的函数接口：</span></span></span><span style="font-family:Georgia,'Times New Roman',Times,san-serif"><span style="font-weight:normal; line-height:24px"><span style="font-size:12px"><br>
+</span></span></span><span style="font-family:Georgia,'Times New Roman',Times,san-serif"><span style="font-weight:normal; line-height:24px"><span style="font-size:12px">&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;<img src="http://my.csdn.net/uploads/201204/10/1334045728_5744.png" alt=""><br>
+</span></span></span><span style="font-size:12px"><br>
+</span>
+<p style="line-height:25px; margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto; color:rgb(51,51,51); font-family:Georgia,'Times New Roman',Times,san-serif; text-align:left">
+</p>
+<span style="font-size:12px">从图中可以看出，当客户端调用<span style="font-size:14px; color:#d16349">connect</span>时，触发了连接请求，向服务器发送了SYN J包，这时connect进入阻塞状态；服务器监听到连接请求，即收到SYN J包，调用<span style="font-size:14px; color:#d16349">accept</span>函数接收请求向客户端发送SYN K ，ACK J&#43;1，这时accept进入阻塞状态；客户端收到服务器的SYN
+ K ，ACK J&#43;1之后，这时connect返回，并对SYN K进行确认；服务器收到ACK K&#43;1时，accept返回，至此三次握手完毕，连接建立。</span></div>
+<div><span style="font-size:12px"><br>
+</span></div>
+<div><span style="font-size:12px">我们可以通过网络抓包的查看具体的流程：</span></div>
+<div><span style="font-size:12px">比如我们服务器开启9502的端口。使用tcpdump来抓包：</span></div>
+<div><span style="font-size:12px"><br>
+</span></div>
+<div><strong><span style="font-size:14px; color:#ff0000">&nbsp;tcpdump -iany tcp port 9502</span></strong><br>
+</div>
+<div><span style="font-size:12px"><br>
+</span></div>
+<div><span style="font-size:12px">然后我们使用telnet 127.0.0.1 9502开连接.:</span></div>
+<div><span style="font-size:12px">telnet 127.0.0.1 9502<br>
+</span></div>
+<div><br>
+</div>
+<div><span style="font-size:12px"><span style="background-color:rgb(204,204,204)">14:12:45.104687 IP localhost.39870 &gt; localhost.9502: Flags [S], seq 2927179378, win 32792, options [mss 16396,sackOK,TS val 255474104 ecr 0,nop,wscale 3], length 0</span><strong><span style="color:#009900; background-color:rgb(255,255,255)">（1）</span></strong><br>
+<span style="background-color:rgb(204,204,204)">14:12:45.104701 IP localhost.9502 &gt; localhost.39870: Flags [S.], seq 1721825043, ack 2927179379, win 32768, options [mss 16396,sackOK,TS val 255474104 ecr 255474104,nop,wscale 3], length 0 &nbsp;</span><strong><span style="color:#0990; background-color:rgb(255,255,255)">（2）</span></strong><br>
+<span style="background-color:rgb(204,204,204)">14:12:45.104711 IP localhost.39870 &gt; localhost.9502: Flags [.], ack 1, win 4099, options [nop,nop,TS val 255474104 ecr 255474104], length 0 &nbsp;</span><strong><span style="color:#0990; background-color:rgb(255,255,255)">（3）</span></strong></span></div>
+<div><span style="font-size:12px"><span style="color:#009900"><strong><br>
+</strong></span><span style="background-color:rgb(255,204,255)">14:13:01.415407 IP localhost.39870 &gt; localhost.9502: Flags [P.], seq 1:8, ack 1, win 4099, options [nop,nop,TS val 255478182 ecr 255474104], length 7<br>
+14:13:01.415432 IP localhost.9502 &gt; localhost.39870: Flags [.], ack 8, win 4096, options [nop,nop,TS val 255478182 ecr 255478182], length 0<br>
+14:13:01.415747 IP localhost.9502 &gt; localhost.39870: Flags [P.], seq 1:19, ack 8, win 4096, options [nop,nop,TS val 255478182 ecr 255478182], length 18<br>
+14:13:01.415757 IP localhost.39870 &gt; localhost.9502: Flags [.], ack 19, win 4097, options [nop,nop,TS val 255478182 ecr 255478182], length 0</span><br>
+</span></div>
+<div><span style="font-size:12px"><br>
+</span></div>
+<div><span style="font-size:12px"></span>
+<ul style="padding:0px 0px 0px 30px; margin-top:15px; margin-right:0px; margin-left:0px; color:rgb(51,51,51); font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:15px; line-height:27px; margin-bottom:0px!important">
+<li style="">1<span style="background-color:rgb(204,204,204)">14:12:45.104687</span> 时间带有精确到微妙</li><li style=""><span style="background-color:rgb(204,204,204)">localhost.39870 &gt; localhost.9502</span> 表示通信的流向，<span style="background-color:rgb(204,204,204)">39870</span>是客户端，<span style="background-color:rgb(204,204,204)">9502</span>是服务器端</li><li style="">[S] 表示这是一个SYN请求</li><li style=""><span style="color:rgb(51,51,51); font-family:'Helvetica Neue',Helvetica,Arial,sans-serif; font-size:15px; line-height:27px">[S.] 表示这是一个SYN&#43;ACK确认包:&nbsp;</span><br>
+</li><li style="">[.] 表示这是一个ACT确认包， (client)SYN-&gt;(server)SYN-&gt;(client)ACT 就是3次握手过程</li><li style="">[P] 表示这个是一个数据推送，可以是从服务器端向客户端推送，也可以从客户端向服务器端推</li><li style="">[F] 表示这是一个FIN包，是关闭连接操作，client/server都有可能发起</li><li style="">[R] 表示这是一个RST包，与F包作用相同，但RST表示连接关闭时，仍然有数据未被处理。可以理解为是强制切断连接</li><li style=""><span style="background-color:rgb(255,204,255)">win 4099&nbsp;</span>是指滑动窗口大小</li><li style="">length 18指数据包的大小</li></ul>
+<br>
+</div>
+<div><br>
+</div>
+<div><span style="font-size:12px">我们看到 <span style="color:#0990"><strong>（1）<span style="color:#0990"><strong>（2）<span style="color:#0990"><strong>（3）三步是建立tcp：</strong></span></strong></span></strong></span></span></div>
+<div><span style="font-size:12px"><span style="color:#0990"><strong><span style="color:#0990"><strong><span style="color:#0990"><strong>第一次握手：</strong></span></strong></span></strong></span></span></div>
+<div><span style="font-size:12px"><span style="background-color:rgb(204,204,204)"><span style="background-color:rgb(204,204,204)">14:12:45.104687 IP localhost.39870 &gt; localhost.9502: Flags [S], seq 2927179378</span></span></span></div>
+<div>客户端<span style="background-color:rgb(204,204,204)">IP localhost.39870</span><span style="background-color:rgb(255,255,255)"> (客户端的端口一般是自动分配的) 向服务器</span><span style="background-color:rgb(204,204,204)">localhost.9502</span><span style="background-color:rgb(255,255,255)"><span style="color:#ffffff">&nbsp;</span>发送syn包(syn=j)到服务器》</span></div>
+<div><span style="background-color:rgb(255,255,255)"><span style="font-size:12px; font-weight:normal">syn包(syn=j)</span> ： syn的seq=<span style="background-color:rgb(204,204,204)">&nbsp;2927179378&nbsp; （<span style="background-color:rgb(255,255,255)"><span style="font-size:12px; font-weight:normal">j</span></span>=<span style="background-color:rgb(255,255,255)"><span style="background-color:rgb(204,204,204)">2927179378</span></span>）<br>
+</span></span></div>
+<div><span style="background-color:rgb(255,255,255)"><br>
+</span></div>
+<div><span style="background-color:rgb(255,255,255)"><span style="color:#0990"><strong>第二次握手：</strong></span><br>
+</span></div>
+<div><span style="font-size:12px"><span style="background-color:rgb(204,204,204)"><span style="background-color:rgb(204,204,204)">14:12:45.104701 IP localhost.9502 &gt; localhost.39870: Flags [S.], seq 1721825043, ack 2927179379,</span></span></span></div>
+<div><span style="font-size:12px"><span style="background-color:rgb(255,255,255)">收到请求并确认：服务器收到syn包，并必须确认客户的SYN（ack=j&#43;1），同时自己也发送一个SYN包（syn=k），即SYN&#43;ACK包：<br>
+此时服务器主机自己的SYN：<span style="font-size:12px"><span style="background-color:rgb(255,255,255)"><span style="font-size:16px"><span style="font-size:12px"><span style="background-color:rgb(255,255,255)"><span style="font-size:12px"><span style="background-color:rgb(255,255,255)"><span style="font-size:12px"><span style="background-color:rgb(255,255,255)"></span></span></span></span></span></span>seq：y</span></span></span>=<span style="font-size:12px"><span style="background-color:rgb(255,255,255)"><span style="font-size:12px"><span style="background-color:rgb(255,255,255)"><span style="font-size:12px"><span style="background-color:rgb(255,255,255)">
+ syn <span style="background-color:rgb(204,204,204)">seq 1721825043。<br>
+ACK为<span style="font-size:12px"><span style="background-color:rgb(255,255,255)">j&#43;1</span></span> =<span style="font-size:12px"><span style="background-color:rgb(255,255,255)">（ack=j&#43;1）=<span style="background-color:rgb(204,204,204)">ack 2927179379</span>&nbsp;<br>
+</span></span><br>
+</span></span></span></span></span></span></span><span style="font-size:16px"></span><span style="font-size:12px"><span style="background-color:rgb(255,255,255)"><span style="font-size:12px"><span style="background-color:rgb(255,255,255)"></span></span></span></span><br>
+</span></span></div>
+<div><span style="font-size:12px"><span style="color:#0990; background-color:rgb(255,255,255)"><strong>第三次握手：</strong></span></span></div>
+<div><span style="font-size:12px"><span style="background-color:rgb(204,204,204)"><span style="background-color:rgb(204,204,204)">14:12:45.104711 IP localhost.39870 &gt; localhost.9502: Flags [.], ack 1,</span></span><br>
+</span></div>
+<div><span style="font-size:12px"><span style="background-color:rgb(255,255,255)">客户端收到服务器的SYN&#43;ACK包，向服务器发送确认包ACK(ack=k&#43;1)</span><br>
+</span></div>
+<div><br>
+</div>
+<div><span style="font-size:12px">客户端和服务器进入ESTABLISHED状态后，可以进行通信数据交互。此时和accept接口没有关系，即使没有accepte，也进行3次握手完成。</span></div>
+<div>连<span style="color:#ff0000">接出现连接不上的问题，一般是网路出现问题或者网卡超负荷或者是连接数已经满啦。</span></div>
+<div><br>
+</div>
+<div>紫色背景的部分：</div>
+<div><span style="background-color:rgb(255,204,255)">IP localhost.39870 &gt; localhost.9502: Flags [P.], seq 1:8, ack 1, win 4099, options [nop,nop,TS val 255478182 ecr 255474104], length 7</span><br>
+</div>
+<div><span style="background-color:rgb(255,204,255)">客户端向服务器发送长度为7个字节的数据，</span></div>
+<div><span style="background-color:rgb(255,204,255)"><br>
+</span></div>
+<div><span style="background-color:rgb(255,204,255)">IP localhost.9502 &gt; localhost.39870: Flags [.], ack 8, win 4096, options [nop,nop,TS val 255478182 ecr 255478182], length 0</span><br>
+</div>
+<div><span style="background-color:rgb(255,204,255)">服务器向客户确认已经收到数据</span></div>
+<div><span style="background-color:rgb(255,204,255)"><br>
+</span></div>
+<div><span style="background-color:rgb(255,204,255)">&nbsp;IP localhost.9502 &gt; localhost.39870: Flags [P.], seq 1:19, ack 8, win 4096, options [nop,nop,TS val 255478182 ecr 255478182], length 18</span><br>
+</div>
+<div><span style="background-color:rgb(255,204,255)">然后服务器同时向客户端写入数据。</span></div>
+<div><span style="background-color:rgb(255,204,255)"><br>
+</span></div>
+<div><span style="background-color:rgb(255,204,255)"><span style="background-color:rgb(255,204,255)">&nbsp;IP localhost.39870 &gt; localhost.9502: Flags [.], ack 19, win 4097, options [nop,nop,TS val 255478182 ecr 255478182], length 0</span><br>
+</span></div>
+<div>
+<div style="background-color:rgb(255,204,255)"><span style="background-color:rgb(255,204,255)">客户端向服务器确认已经收到数据</span></div>
+<div><span style="background-color:rgb(255,255,255)"><br>
+</span></div>
+<span style="background-color:rgb(255,255,255)">这个就是tcp可靠的连接，每次通信都需要对方来确认。</span><br>
+<br>
+</div>
+<div><br>
+</div>
+<div>
+<p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; font-size:14px; color:rgb(69,69,69); font-family:tahoma,helvetica,arial; line-height:14px">
+</p>
+<h2 style="margin:0px; padding:0px; color:rgb(51,51,51); font-family:Arial; line-height:26px">
+<p class="headline-1 bk-sidecatalog-title" style="margin-top:0px; margin-bottom:10px; padding-top:0px; padding-bottom:6px; border-bottom-color:rgb(222,223,225); border-bottom-width:1px; border-bottom-style:solid; clear:both">
+<span style="color:#336699"><span style="line-height:36px; font-size:22px">6. TCP连接的终止（四次握手释放）</span></span></p>
+</h2>
+<div><span class="headline-content"><span style="font-size:12px"><span style="font-family:arial,宋体,sans-serif; line-height:24px; text-align:left">建立一个连接需要三次握手，而终止一个连接要经过四次握手，这是由TCP的半关闭(half-close)造成的，如图：</span><br>
+</span></span></div>
+<div><span class="headline-content"><span style="font-family:arial,宋体,sans-serif; line-height:24px; text-align:left"><span style="font-size:12px"><img src="http://my.csdn.net/uploads/201204/10/1334046363_4881.jpg" alt=""><br>
+</span></span></span></div>
+<div><span class="headline-content"><span style="font-size:12px"><span style="font-family:arial,宋体,sans-serif; line-height:24px; text-align:left"></span></span></span>
+<p align="left" style="line-height:25px; margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto; color:rgb(51,51,51); font-family:Georgia,'Times New Roman',Times,san-serif">
+</p>
+<p><span style="font-size:12px">由于<span style="font-family:Times New Roman">TCP</span>连接是全双工的，因此每个方向都必须单独进行关闭。这个原则是当一方完成它的数据发送任务后就能发送一个<span style="font-family:Times New Roman">FIN</span>来终止这个方向的连接。收到一个<span style="font-family:Times New Roman">&nbsp;FIN</span>只意味着这一方向上没有数据流动，一个<span style="font-family:Times New Roman">TCP</span>连接在收到一个<span style="font-family:Times New Roman">FIN</span>后仍能发送数据。首先进行关闭的一方将执行主动关闭，而另一方执行被动关闭。</span></p>
+<p><span style="font-size:12px">（<span style="font-family:Times New Roman">1</span>）客户端<span style="font-family:Times New Roman">A</span>发送一个<span style="font-family:Times New Roman">FIN</span>，用来关闭客户<span style="font-family:Times New Roman">A</span>到服务器<span style="font-family:Times New Roman">B</span>的数据传送（报文段<span style="font-family:Times New Roman">4</span>）。</span></p>
+<p><span style="font-size:12px">（<span style="font-family:Times New Roman">2</span>）服务器<span style="font-family:Times New Roman">B</span>收到这个<span style="font-family:Times New Roman">FIN</span>，它发回一个<span style="font-family:Times New Roman">ACK</span>，确认序号为收到的序号加<span style="font-family:Times New Roman">1</span>（报文段<span style="font-family:Times New Roman">5</span>）。和<span style="font-family:Times New Roman">SYN</span>一样，一个<span style="font-family:Times New Roman">FIN</span>将占用一个序号。</span></p>
+<p><span style="font-size:12px">（<span style="font-family:Times New Roman">3</span>）服务器<span style="font-family:Times New Roman">B</span>关闭与客户端<span style="font-family:Times New Roman">A</span>的连接，发送一个<span style="font-family:Times New Roman">FIN</span>给客户端<span style="font-family:Times New Roman">A</span>（报文段<span style="font-family:Times New Roman">6</span>）。</span></p>
+<p><span style="font-size:12px">（<span style="font-family:Times New Roman">4</span>）客户端<span style="font-family:Times New Roman">A</span>发回<span style="font-family:Times New Roman">ACK</span>报文确认，并将确认序号设置为收到序号加<span style="font-family:Times New Roman">1</span>（报文段<span style="font-family:Times New Roman">7</span>）。</span></p>
+<span style="font-size:12px">对应函数接口如图：</span></div>
+<p></p>
+<p align="left" style="line-height:25px; margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto; color:rgb(51,51,51); font-family:Georgia,'Times New Roman',Times,san-serif">
+<span style="font-size:12px"><img src="http://my.csdn.net/uploads/201204/10/1334046534_7834.png" alt=""><br>
+</span></p>
+<p align="left" style="line-height:25px; margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto; color:rgb(51,51,51); font-family:Georgia,'Times New Roman',Times,san-serif">
+<span style="line-height:25px"><span style="font-size:12px">过程如下：</span></span></p>
+<ul style="list-style-position:initial; margin-top:10px; margin-right:10px; margin-bottom:10px; margin-left:45px; padding-top:0px; padding-right:0px; padding-bottom:0px; padding-left:0px; color:rgb(51,51,51); font-family:Georgia,'Times New Roman',Times,san-serif; line-height:25px; text-align:left">
+<li style="padding-top:0px; padding-right:0px; padding-bottom:0px; padding-left:15px; list-style:inherit">
+<div align="left"><span style="font-size:12px">某个应用进程首先调用<span style="font-size:14px; color:#d16349">close</span>主动关闭连接，这时TCP发送一个FIN M；</span></div>
+</li><li style="padding-top:0px; padding-right:0px; padding-bottom:0px; padding-left:15px; list-style:inherit">
+<div align="left"><span style="font-size:12px">另一端接收到FIN M之后，执行被动关闭，对这个FIN进行确认。它的接收也作为文件结束符传递给应用进程，因为FIN的接收意味着应用进程在相应的连接上再也接收不到额外数据；</span></div>
+</li><li style="padding-top:0px; padding-right:0px; padding-bottom:0px; padding-left:15px; list-style:inherit">
+<div align="left"><span style="font-size:12px">一段时间之后，接收到文件结束符的应用进程调用<span style="font-size:14px; color:#d16349">close</span>关闭它的socket。这导致它的TCP也发送一个FIN N；</span></div>
+</li><li style="padding-top:0px; padding-right:0px; padding-bottom:0px; padding-left:15px; list-style:inherit">
+<div align="left"><span style="font-size:12px">接收到这个FIN的源发送端TCP对它进行确认。</span></div>
+</li></ul>
+<p align="left" style="line-height:25px; margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto; color:rgb(51,51,51); font-family:Georgia,'Times New Roman',Times,san-serif">
+<span style="font-size:12px">这样每个方向上都有一个FIN和ACK。</span></p>
+<p align="left" style="line-height:25px; margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto; color:rgb(51,51,51); font-family:Georgia,'Times New Roman',Times,san-serif">
+<span style="font-size:12px"><span style="font-family:'Times New Roman'">1</span>．为什么建立连接协议是三次握手，而关闭连接却是四次握手呢？</span></p>
+<p align="left" style="line-height:25px; margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto; color:rgb(51,51,51); font-family:Georgia,'Times New Roman',Times,san-serif">
+<span style="font-size:12px">这是因为服务端的<span style="font-family:'Times New Roman'">LISTEN</span>状态下的<span style="font-family:'Times New Roman'">SOCKET</span>当收到<span style="font-family:'Times New Roman'">SYN</span>报文的建连请求后，它可以把<span style="font-family:'Times New Roman'">ACK</span>和<span style="font-family:'Times New Roman'">SYN</span>（<span style="font-family:'Times New Roman'">ACK</span>起应答作用，而<span style="font-family:'Times New Roman'">SYN</span>起同步作用）放在一个报文里来发送。但关闭连接时，当收到对方的<span style="font-family:'Times New Roman'">FIN</span>报文通知时，它仅仅表示对方没有数据发送给你了；但未必你所有的数据都全部发送给对方了，所以你可以未必会马上会关闭<span style="font-family:'Times New Roman'">SOCKET,</span>也即你可能还需要发送一些数据给对方之后，再发送<span style="font-family:'Times New Roman'">FIN</span>报文给对方来表示你同意现在可以关闭连接了，所以它这里的<span style="font-family:'Times New Roman'">ACK</span>报文和<span style="font-family:'Times New Roman'">FIN</span>报文多数情况下都是分开发送的。</span></p>
+</div>
+<p align="justify" style="margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto">
+</p>
+<p align="left"><span style="font-size:12px"><span style="font-family:Times New Roman">2</span>．为什么<span style="font-family:Times New Roman">TIME_WAIT</span>状态还需要等<span style="font-family:Times New Roman">2MSL</span>后才能返回到<span style="font-family:Times New Roman">CLOSED</span>状态？</span></p>
+<p align="left"><span style="font-size:12px">这是因为虽然双方都同意关闭连接了，而且握手的<span style="font-family:Times New Roman">4</span>个报文也都协调和发送完毕，按理可以直接回到<span style="font-family:Times New Roman">CLOSED</span>状态（就好比从<span style="font-family:Times New Roman">SYN_SEND</span>状态到<span style="font-family:Times New Roman">ESTABLISH</span>状态那样）；但是因为我们必须要假想网络是不可靠的，你无法保证你最后发送的<span style="font-family:Times New Roman">ACK</span>报文会一定被对方收到，因此对方处于<span style="font-family:Times New Roman">LAST_ACK</span>状态下的<span style="font-family:Times New Roman">SOCKET</span>可能会因为超时未收到<span style="font-family:Times New Roman">ACK</span>报文，而重发<span style="font-family:Times New Roman">FIN</span>报文，所以这个<span style="font-family:Times New Roman">TIME_WAIT</span>状态的作用就是用来重发可能丢失的<span style="font-family:Times New Roman">ACK</span>报文。</span></p>
+<p align="left"><span style="font-size:12px"><br>
+</span></p>
+<p align="left"><br>
+</p>
+<p align="left"><br>
+<span style="font-size:12px"></span></p>
+<p align="left"><span style="font-size:12px"></span></p>
+<p style="margin-top:0px; margin-bottom:0px; padding-top:0px; padding-bottom:0px; font-size:14px; color:rgb(69,69,69); font-family:tahoma,helvetica,arial; line-height:14px">
+</p>
+<h2 style="margin:0px; padding:0px; color:rgb(51,51,51); font-family:Arial; line-height:26px">
+<p class="headline-1 bk-sidecatalog-title" style="margin-top:0px; margin-bottom:10px; padding-top:0px; padding-bottom:6px; border-bottom-color:rgb(222,223,225); border-bottom-width:1px; border-bottom-style:solid; clear:both">
+<span style="color:#336699"><span style="line-height:36px; font-size:22px">7. Socket编程实例</span></span></p>
+</h2>
+<p align="left"><span style="font-size:12px">服务器端：<span style="font-family:Georgia,'Times New Roman',Times,san-serif; color:#333333; line-height:25px; text-align:left">一直监听本机的8000号端口，如果收到连接请求，将接收请求并接收客户端发来的消息，并向客户端返回消息。</span></span></p>
+<p align="left"><span style="font-family:Georgia,'Times New Roman',Times,san-serif; color:#333333"><span style="line-height:24px"></span></span></p>
+<pre code_snippet_id="441451" snippet_file_name="blog_20140803_1_5909352"  code_snippet_id="441451" snippet_file_name="blog_20140803_1_5909352" name="code" class="cpp">/* File Name: server.c */
+#include&lt;stdio.h&gt;
+#include&lt;stdlib.h&gt;
+#include&lt;string.h&gt;
+#include&lt;errno.h&gt;
+#include&lt;sys/types.h&gt;
+#include&lt;sys/socket.h&gt;
+#include&lt;netinet/in.h&gt;
+#define DEFAULT_PORT 8000
+#define MAXLINE 4096
+int main(int argc, char** argv)
+{
+    int    socket_fd, connect_fd;
+    struct sockaddr_in     servaddr;
+    char    buff[4096];
+    int     n;
+    //初始化Socket
+    if( (socket_fd = socket(AF_INET, SOCK_STREAM, 0)) == -1 ){
+    printf(&quot;create socket error: %s(errno: %d)\n&quot;,strerror(errno),errno);
+    exit(0);
+    }
+    //初始化
+    memset(&amp;servaddr, 0, sizeof(servaddr));
+    servaddr.sin_family = AF_INET;
+    servaddr.sin_addr.s_addr = htonl(INADDR_ANY);//IP地址设置成INADDR_ANY,让系统自动获取本机的IP地址。
+    servaddr.sin_port = htons(DEFAULT_PORT);//设置的端口为DEFAULT_PORT
+
+    //将本地地址绑定到所创建的套接字上
+    if( bind(socket_fd, (struct sockaddr*)&amp;servaddr, sizeof(servaddr)) == -1){
+    printf(&quot;bind socket error: %s(errno: %d)\n&quot;,strerror(errno),errno);
+    exit(0);
+    }
+    //开始监听是否有客户端连接
+    if( listen(socket_fd, 10) == -1){
+    printf(&quot;listen socket error: %s(errno: %d)\n&quot;,strerror(errno),errno);
+    exit(0);
+    }
+    printf(&quot;======waiting for client&#39;s request======\n&quot;);
+    while(1){
+//阻塞直到有客户端连接，不然多浪费CPU资源。
+        if( (connect_fd = accept(socket_fd, (struct sockaddr*)NULL, NULL)) == -1){
+        printf(&quot;accept socket error: %s(errno: %d)&quot;,strerror(errno),errno);
+        continue;
+    }
+//接受客户端传过来的数据
+    n = recv(connect_fd, buff, MAXLINE, 0);
+//向客户端发送回应数据
+    if(!fork()){ /*紫禁城*/
+        if(send(connect_fd, &quot;Hello,you are connected!\n&quot;, 26,0) == -1)
+        perror(&quot;send error&quot;);
+        close(connect_fd);
+        exit(0);
+    }
+    buff[n] = &#39;\0&#39;;
+    printf(&quot;recv msg from client: %s\n&quot;, buff);
+    close(connect_fd);
+    }
+    close(socket_fd);
+}</pre>
+<p></p>
+<p></p>
+<p align="justify" style="margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto">
+<span style="font-size:12px">客户端：</span></p>
+<p align="justify" style="text-align:left; margin-top:12px; margin-right:auto; margin-bottom:12px; margin-left:auto">
+<span style="font-family:Consolas,'Courier New',Courier,mono,serif; font-size:12px; color:#999999"><span style="line-height:12px"></span></span></p>
+<pre code_snippet_id="441451" snippet_file_name="blog_20140803_2_3303604"  code_snippet_id="441451" snippet_file_name="blog_20140803_2_3303604" name="code" class="cpp">/* File Name: client.c */
+
+#include&lt;stdio.h&gt;
+#include&lt;stdlib.h&gt;
+#include&lt;string.h&gt;
+#include&lt;errno.h&gt;
+#include&lt;sys/types.h&gt;
+#include&lt;sys/socket.h&gt;
+#include&lt;netinet/in.h&gt;
+
+#define MAXLINE 4096
+
+
+int main(int argc, char** argv)
+{
+    int    sockfd, n,rec_len;
+    char    recvline[4096], sendline[4096];
+    char    buf[MAXLINE];
+    struct sockaddr_in    servaddr;
+
+
+    if( argc != 2){
+    printf(&quot;usage: ./client &lt;ipaddress&gt;\n&quot;);
+    exit(0);
+    }
+
+
+    if( (sockfd = socket(AF_INET, SOCK_STREAM, 0)) &lt; 0){
+    printf(&quot;create socket error: %s(errno: %d)\n&quot;, strerror(errno),errno);
+    exit(0);
+    }
+
+
+    memset(&amp;servaddr, 0, sizeof(servaddr));
+    servaddr.sin_family = AF_INET;
+    servaddr.sin_port = htons(8000);
+    if( inet_pton(AF_INET, argv[1], &amp;servaddr.sin_addr) &lt;= 0){
+    printf(&quot;inet_pton error for %s\n&quot;,argv[1]);
+    exit(0);
+    }
+
+
+    if( connect(sockfd, (struct sockaddr*)&amp;servaddr, sizeof(servaddr)) &lt; 0){
+    printf(&quot;connect error: %s(errno: %d)\n&quot;,strerror(errno),errno);
+    exit(0);
+    }
+
+
+    printf(&quot;send msg to server: \n&quot;);
+    fgets(sendline, 4096, stdin);
+    if( send(sockfd, sendline, strlen(sendline), 0) &lt; 0)
+    {
+    printf(&quot;send msg error: %s(errno: %d)\n&quot;, strerror(errno), errno);
+    exit(0);
+    }
+    if((rec_len = recv(sockfd, buf, MAXLINE,0)) == -1) {
+       perror(&quot;recv error&quot;);
+       exit(1);
+    }
+    buf[rec_len]  = &#39;\0&#39;;
+    printf(&quot;Received : %s &quot;,buf);
+    close(sockfd);
+    exit(0);
+}</pre>
+<p align="left"><span style="font-size:12px"><span style="font-family:arial,宋体,sans-serif; font-size:14px; line-height:24px"><span style="font-family:arial,宋体,sans-serif; font-size:14px; line-height:24px"><span style="font-family:arial,宋体,sans-serif; line-height:24px">inet_pton
+ 是</span>Linux下IP地址转换函数，可以在将IP地址在“点分十进制”和“整数”之间转换 ，<span style="font-family:arial,宋体,sans-serif; line-height:24px">是inet_addr的扩展。</span></span><br>
+</span></span></p>
+<p align="left"><span style="font-size:12px; line-height:24px"><span style="font-family:arial,宋体,sans-serif"></span></span></p>
+<pre code_snippet_id="441451" snippet_file_name="blog_20140803_3_3271367"  code_snippet_id="441451" snippet_file_name="blog_20140803_3_3271367" name="code" class="cpp">int inet_pton(int af, const char *src, void *dst);//转换字符串到网络地址:</pre>第一个参数af是地址族，转换后存在dst中<br>
+&nbsp; &nbsp; af = AF_INET:src为指向字符型的地址，即ASCII的地址的首地址（ddd.ddd.ddd.ddd&#26684;式的），函数将该地址转换为in_addr的结构体，并复制在*dst中<br>
+　　af =AF_INET6:src为指向IPV6的地址，函数将该地址转换为in6_addr的结构体，并复制在*dst中<br>
+如果函数出错将返回一个负&#20540;，并将errno设置为EAFNOSUPPORT，如果参数af指定的地址族和src&#26684;式不对，函数将返回0。
+<p></p>
+<p align="left"><span style="font-size:12px">测试：</span></p>
+<p align="left"><span style="font-size:12px">编译server.c</span></p>
+<p align="left"><span style="font-size:12px">gcc -o server server.c</span></p>
+<p align="left"><span style="font-size:12px">启动进程：</span></p>
+<p align="left"><span style="font-size:12px">./server</span></p>
+<p align="left"><span style="font-size:12px">显示结果：</span></p>
+<p align="left"><span style="font-size:12px">======waiting for client's request======<br>
+</span></p>
+<p align="left"><span style="font-size:12px">并等待客户端连接。</span></p>
+<p align="left"><span style="font-size:12px">编译 client.c</span></p>
+<p align="left"><span style="font-size:12px"><span style="">gcc -o client server.c</span></span></p>
+<p align="left"><span style="font-size:12px">客户端去连接server：</span></p>
+<p align="left"><span style="font-size:12px">./client 127.0.0.1&nbsp;</span></p>
+<p align="left"><span style="font-size:12px">等待输入消息</span></p>
+<p align="left"><span style="font-size:12px"><img src="http://my.csdn.net/uploads/201204/10/1334050427_5715.jpg" alt=""><br>
+</span></p>
+<p align="left"><span style="font-size:12px">发送一条消息，输入：c&#43;&#43;</span></p>
+<p align="left"><span style="font-size:12px"><img src="http://my.csdn.net/uploads/201204/10/1334050530_5798.jpg" alt=""><br>
+</span></p>
+<p align="left"><span style="font-size:12px">此时服务器端看到：</span></p>
+<p align="left"><span style="font-size:12px"><img src="http://my.csdn.net/uploads/201204/10/1334050486_4744.jpg" alt=""><br>
+</span></p>
+<p align="left"><span style="font-size:12px">客户端收到消息：</span></p>
+<p align="left"><span style="font-size:12px"><img src="http://my.csdn.net/uploads/201204/10/1334050530_5798.jpg" alt=""></span></p>
+<p align="left"><span style="font-size:12px"></span></p>
+<p align="left"><span style="font-size:12px">其实可以不用client,可以使用telnet来测试：</span></p>
+<p align="left"><span style="font-size:12px">telnet 127.0.0.1 8000</span></p>
+<p align="left"><span style="font-size:12px"><img src="http://my.csdn.net/uploads/201204/10/1334051778_7806.jpg" alt=""><br>
+</span></p>
+<p align="left"><span style="font-size:12px"><br>
+</span></p>
+<p align="left"><span style="font-size:12px">注意：</span></p>
+<p align="left"><span style="font-size:12px">在ubuntu 编译源代码的时候，头文件types.h可能找不到。<br>
+使用dpkg -L libc6-dev | grep types.h 查看。<br>
+如果没有，可以使用<br>
+apt-get install libc6-dev安装。<br>
+如果有了，但不在/usr/include/sys/目录下，手动把这个文件添加到这个目录下就可以了。</span></p>
+<p align="left"><span style="font-size:12px">(部分内容来自<span style="font-family:Georgia,'Times New Roman',Times,san-serif; font-size:14px; color:#333333; line-height:25px; text-align:left">吴秦</span>：<a target="_blank" target="_blank" href="http://www.cnblogs.com/skynet/archive/2010/12/12/1903949.html">http://www.cnblogs.com/skynet/archive/2010/12/12/1903949.html</a>)</span></p>
+<br>
+   
+</div>
+
+
+
+
+<!-- Baidu Button BEGIN -->
+
+
+
+
+<div class="bdsharebuttonbox" style="float: right;">
+<a href="#" class="bds_more" data-cmd="more" style="background-position:0 0 !important; background-image: url(http://bdimg.share.baidu.com/static/api/img/share/icons_0_16.png?v=d754dcc0.png) !important"></a>
+<a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"  style="background-position:0 -52px !important"></a>
+<a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"style="background-position:0 -104px !important"></a>
+<a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博"style="background-position:0 -260px !important"></a>
+<a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"style="background-position:0 -208px !important"></a>
+<a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"style="background-position:0 -1612px !important" ></a>
+</div>
+<script>window._bd_share_config = { "common": { "bdSnsKey": {}, "bdText": "", "bdMini": "1", "bdMiniList": false, "bdPic": "", "bdStyle": "0", "bdSize": "16" }, "share": {} }; with (document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];</script>
+<!-- Baidu Button END -->
+
+   <link rel="stylesheet" href="http://static.blog.csdn.net/css/blog_detail.css" />
+
+    
+<!--172.16.140.14-->
+<ul class="article_next_prev">
+            <li class="prev_article"><span  onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_shangyipian']);location.href='/hguisu/article/details/7444092';">上一篇</span><a href="/hguisu/article/details/7444092" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_shangyipian'])">socket编程原理</a></li>
+            <li class="next_article"><span onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_xiayipian']);location.href='/hguisu/article/details/7448528';">下一篇</span><a href="/hguisu/article/details/7448528" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_xiayipian'])">PHP SOCKET编程</a></li>
+</ul>
+
+<!-- Baidu Button BEGIN -->
+<script type="text/javascript" id="bdshare_js" data="type=tools&amp;uid=1536434" ></script>
+<script type="text/javascript" id="bdshell_js"></script>
+<script type="text/javascript">
+    document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + Math.ceil(new Date()/3600000)
+</script>
+<!-- Baidu Button END -->
+
+ 
+
+        <div id="digg" ArticleId="7445768">
+            <dl id="btnDigg" class="digg digg_disable">
+               
+                 <dt>顶</dt>
+                <dd>24</dd>
+            </dl>
+            <dl id="btnBury" class="digg digg_disable">
+              
+                  <dt>踩</dt>
+                <dd>0</dd>
+            </dl>
+        </div>
+
+
+        <div class="similar_article"  style="display:none">
+                <h4>我的同类文章</h4>
+                <div class="similar_c"style="margin:20px 0px 0px 0px">
+                    <div class="similar_c_t">
+                                <label class="similar_cur">
+                                    <span  style="cursor:pointer"  onclick="GetCategoryArticles('796967','hguisu','foot','7445768');">Linux<em>（21）</em></span>
+                                </label>
+                                <label class="">
+                                    <span  style="cursor:pointer"  onclick="GetCategoryArticles('1080443','hguisu','foot','7445768');">c/c++<em>（22）</em></span>
+                                </label>
+                                <label class="">
+                                    <span  style="cursor:pointer"  onclick="GetCategoryArticles('1122753','hguisu','foot','7445768');">socket网络编程<em>（7）</em></span>
+                                </label>
+                    </div>
+                   
+                    <div class="similar_wrap">
+                        <ul class="similar_list fl">                          
+                        </ul>
+
+                        <ul class="similar_list fr">                           
+                        </ul>
+                    </div>
+                </div>
+            </div>    
+    <script  type="text/javascript">
+        $(function () {
+            GetCategoryArticles('796967', 'hguisu','foot','7445768');
+        });
+    </script>
+      
+</div>
+<div id="suggest"></div>
+         <script  language="javascript" type='text/javascript'>     
+             $(function(){
+                 $.get("/hguisu/svc/GetSuggestContent/7445768",function(data){
+                     $("#suggest").html(data);
+                 });     
+             });             
+         </script>  
+
+
+<style>
+.blog-ass-articl dd {
+color: #369;
+width: 99%; /*修改行*/
+float: left;
+overflow: hidden;
+font: normal normal 12px/23px "SimSun";
+height: 23px;
+margin: 0;
+padding: 0 0 0 10px;
+margin-right: 30px;
+background: url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px;
+}
+</style>
+
+<dl class="blog-ass-articl" id="res-relatived" > 
+     <dt><span>猜你在找</span></dt>    
+
+
+   
+
+
+    <div id="adCollege" style="width: 42%;float: left;"> 
+        <script src="http://csdnimg.cn/jobreco/job_reco.js" type="text/javascript"></script> 
+        <script type="text/javascript">
+            csdn.position.showEdu({
+                sourceType: "blog",
+                searchType: "detail",
+                searchKey: "7445768",
+                username: "",
+                recordcount: "5",
+                containerId: "adCollege" //容器DIV的id。 
+            });
+        </script> 
+    </div>  
+
+    
+     <div id="res"  data-mod="popu_36"  class="tracking-ad" style="width: 42%;float: left;margin-right: 30px;"></div>
+   
+</dl>
+
+
+
+<script type="text/javascript">
+    $(function () {
+        setTimeout(function () {
+            var searchtitletags = 'Linux的SOCKET编程详解' + ',' + $("#tags").html();
+            searchService({
+                index: 'blog',
+                query: searchtitletags,
+                from: 5,
+                size: 5,
+                appendTo: '#res',
+                url: 'recommend',
+                his: 2,
+                client: "blog_cf_enhance",
+                tmpl: '<dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px;"><a href="#{ url }" title="#{ title }" strategy="#{ strategy }">#{ title }</a></dd>'
+            });
+        }, 500);
+    });    
+
+ </script>   
+
+    <div id="ad_cen">        
+<!--AdForward Begin:-->
+<script type="text/javascript" src="http://csdnim.qtmojo.com/main/s?user=csdn|blog|banner2&db=csdnim&border=0&local=yes&js=ie" charset="gbk"></script>
+<!--AdForward End-->    </div>  
+
+<div class="comment_class">
+    <div id="comment_title" class="panel_head">
+        <span class="see_comment">查看评论</span><a name="comments"></a></div>
+    <div id="comment_list">
+    </div>
+    <div id="comment_bar">
+    </div>
+    <div id="comment_form">
+    </div>
+
+    <div class="announce">
+        * 以上用户言论只代表其个人观点，不代表CSDN网站的观点或立场<a name="reply"></a><a name="quote"></a></div>
+</div>
+
+<script type="text/javascript">
+    var fileName = '7445768';
+    var commentscount = 13;
+    var islock = false
+</script>
+<script type="text/javascript" src="http://static.blog.csdn.net/scripts/comment.js"></script>
+    <div id="ad_bot">
+    </div>
+<div id="report_dialog">
+</div>
+
+<div id="d-top"  style="bottom:60px;">
+        <a id="quick-reply" class="btn btn-top q-reply" title="快速回复" style="display:none;">
+            <img src="http://static.blog.csdn.net/images/blog-icon-reply.png" alt="快速回复">
+        </a>    
+
+    <a id="d-top-a" class="btn btn-top backtop"  style="display: none;" title="返回顶部" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_huidaodingbu'])" style="">         
+         <img src="http://static.blog.csdn.net/images/top.png" alt="TOP">
+    </a>
+</div>
+<script type="text/javascript">
+    $(function ()
+    {
+        $("#ad_frm_0").height("90px");
+        
+        setTimeout(function(){
+            $("#ad_frm_2").height("200px");
+        },1000);    
+    });
+  
+</script>
+<style type="text/css">
+    .tag_list
+    {
+        background: none repeat scroll 0 0 #FFFFFF;
+        border: 1px solid #D7CBC1;
+        color: #000000;
+        font-size: 12px;
+        line-height: 20px;
+        list-style: none outside none;
+        margin: 10px 2% 0 1%;
+        padding: 1px;
+    }
+    .tag_list h5
+    {
+        background: none repeat scroll 0 0 #E0DBD3;
+        color: #47381C;
+        font-size: 12px;
+        height: 24px;
+        line-height: 24px;
+        padding: 0 5px;
+        margin: 0;
+    }
+    .tag_list h5 a
+    {
+        color: #47381C;
+    }
+    .classify
+    {
+        margin: 10px 0;
+        padding: 4px 12px 8px;
+    }
+    .classify a
+    {
+        margin-right: 20px;
+        white-space: nowrap;
+    }
+</style>
+
+
+<div class="tag_list" style="display:none"></div>
+  <script  language="javascript" type='text/javascript'>     
+      $(function(){
+              setTimeout(function(){
+                  $.get("/hguisu/svc/GetTagContent",function(data){
+                      $(".tag_list").html(data).show();
+                  });     
+              });
+          },500);                       
+ </script> 
+
+
+<div id="pop_win" style="display:none ;position: absolute; z-index: 10000; border: 1px solid rgb(220, 220, 220); top: 222.5px; left: 630px; opacity: 1; background: none 0px 0px repeat scroll rgb(255, 255, 255);">
+    
+</div>
+<div id="popup_mask"></div>
+<style>
+    #popup_mask
+    {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: #000;
+        z-index: 9999;
+        left: 0px;
+        top: 0px;
+        opacity: 0.3;
+        filter: alpha(opacity=30);
+        display: none;
+    }
+
+</style>
+
+
+
+
+<script type="text/javascript">
+    $(function(){
+        setTimeout(function(){
+            $(".comment_body:contains('回复')").each(function(index,item){
+                var u=$(this).text().split('：')[0].toString().replace("回复","")
+                var thisComment=$(this);
+                if(u)
+                {
+                    $.getJSON("https://passport.csdn.net/get/nick?callback=?", {users: u}, function(a) {
+                        if(a!=null&&a.data!=null&&a.data.length>0)
+                        {
+                            nick=a.data[0].n; 
+                            if(u!=nick)
+                            {
+                                thisComment.text(thisComment.text().replace(u,nick));  
+                            }
+                        }       
+                    });  
+                }
+            });
+        },200);  
+        
+        setTimeout(function(){
+            $("a img[src='http://js.tongji.linezing.com/stats.gif']").parent().css({"position":"absolute","left":"50%"});
+        },300);
+    });
+
+    function loginbox(){
+        var $logpop=$("#pop_win");
+        $logpop.html('<iframe src="https://passport.csdn.net/account/loginbox?service=http://static.blog.csdn.net/callback.htm" frameborder="0" height="600" width="400" scrolling="no"></iframe>');
+
+        $('#popup_mask').css({
+            opacity: 0.5,
+            width: $( document ).width() + 'px',
+            height:  $( document ).height() + 'px'
+        });
+        $('#popup_mask').css("display","block");
+ 
+        $logpop.css( {
+            top: ($( window ).height() - $logpop.height())/ 2  + $( window 
+       ).scrollTop() + 'px',
+            left:($( window ).width() - $logpop.width())/ 2
+        } );
+ 
+        setTimeout( function () {
+            $logpop.show();
+            $logpop.css( {
+                opacity: 1
+            } );
+        }, 200 );
+ 
+        $('#popup_mask').unbind("click");
+        $('#popup_mask').bind("click", function(){
+            $('#popup_mask').hide();
+            var $clopop = $("#pop_win");
+            $("#common_ask_div_sc").css("display","none");
+            $clopop.css( {
+                opacity: 0
+            } );
+            setTimeout( function () {
+                $clopop.hide();
+            }, 350 );
+            return false;
+        });
+    }    
+
+</script>
+                        <div class="clear">
+                        </div>
+                    </div>                   
+                
+            </div>
+                   
+           <div id="side">
+    <div class="side">
+<div id="panel_Profile" class="panel">
+<ul class="panel_head"><span>个人资料</span></ul>
+<ul class="panel_body profile">
+<div id="blog_userface">
+    <a href="http://my.csdn.net/hguisu" target="_blank">
+    <img src="http://avatar.csdn.net/F/2/A/1_hguisu.jpg" title="访问我的空间" style="max-width:90%"/>
+    </a>
+    <br />
+    <span><a href="http://my.csdn.net/hguisu" class="user_name" target="_blank">hguisu</a></span>
+</div>
+<div class="interact">
+
+    <a href="javascript:void(0);" class="attent" id="span_add_follow" title="[加关注]"></a>
+
+ <a href="javascript:void(0);" class="letter"  title="[发私信]" onclick="window.open('http://msg.csdn.net/letters/model?receiver=hguisu','_blank','height=350,width=700');_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_sixin'])"></a>  
+</div>
+<div id="blog_medal">
+                <div id="bms_box">
+                                            <a  target="_blank">
+                                                    <img src="http://c.csdnimg.cn/jifen/images/xunzhang/xunzhang/chizhiyiheng.png" onmouseover="m_over_m(this,4)" onmouseout="m_out_m()" alt="1" >
+                                            </a>
+               </div>
+</div>
+<ul id="blog_rank">
+    <li>访问：<span>2892792次</span></li>
+    <li>积分：<span>22718</span> </li>    
+    <li >等级： <span style="position:relative;display:inline-block;z-index:1" >
+            <img src="http://c.csdnimg.cn/jifen/images/xunzhang/jianzhang/blog7.png" alt="" style="vertical-align: middle;" id="leveImg">
+            <div id="smallTittle" style=" position: absolute;  left: -24px;  top: 25px;  text-align: center;  width: 101px;  height: 32px;  background-color: #fff;  line-height: 32px;  border: 2px #DDDDDD solid;  box-shadow: 0px 2px 2px rgba (0,0,0,0.1);  display: none;   z-index: 999;">
+            <div style="left: 42%;  top: -8px;  position: absolute;  width: 0;  height: 0;  border-left: 10px solid transparent;  border-right: 10px solid transparent;  border-bottom: 8px solid #EAEAEA;"></div>
+            积分：22718 </div>
+        </span>  </li>
+    <li>排名：<span>第161名</span></li>
+</ul>
+<ul id="blog_statistics">
+    <li>原创：<span>210篇</span></li>
+    <li>转载：<span>2篇</span></li>
+    <li>译文：<span>0篇</span></li>
+    <li>评论：<span>961条</span></li>
+</ul>
+</ul>
+</div>
+
+
+<div id="panel_Category" class="panel">
+<ul class="panel_head"><span>文章分类</span></ul>
+<ul class="panel_body">    
+                 <li>
+                    <a href="/hguisu/article/category/1253451" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">操作系统</a><span>(5)</span>
+                </li>
+                 <li>
+                    <a href="/hguisu/article/category/796967" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">Linux</a><span>(22)</span>
+                </li>
+                 <li>
+                    <a href="/hguisu/article/category/796963" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">MySQL</a><span>(12)</span>
+                </li>
+                 <li>
+                    <a href="/hguisu/article/category/796962" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">PHP</a><span>(42)</span>
+                </li>
+                 <li>
+                    <a href="/hguisu/article/category/5905793" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">架构</a><span>(3)</span>
+                </li>
+                 <li>
+                    <a href="/hguisu/article/category/1104862" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">PHP内核</a><span>(11)</span>
+                </li>
+                 <li>
+                    <a href="/hguisu/article/category/796968" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">技术人生</a><span>(8)</span>
+                </li>
+                 <li>
+                    <a href="/hguisu/article/category/1054628" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">数据结构与算法</a><span>(30)</span>
+                </li>
+                 <li>
+                    <a href="/hguisu/article/category/1072794" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">云计算hadoop</a><span>(25)</span>
+                </li>
+                 <li>
+                    <a href="/hguisu/article/category/1075597" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">网络知识</a><span>(7)</span>
+                </li>
+                 <li>
+                    <a href="/hguisu/article/category/1080443" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">c/c++</a><span>(23)</span>
+                </li>
+                 <li>
+                    <a href="/hguisu/article/category/1099674" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">memcache</a><span>(5)</span>
+                </li>
+                 <li>
+                    <a href="/hguisu/article/category/1111071" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">HipHop</a><span>(2)</span>
+                </li>
+                 <li>
+                    <a href="/hguisu/article/category/1112019" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">计算机原理</a><span>(4)</span>
+                </li>
+                 <li>
+                    <a href="/hguisu/article/category/1114530" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">Java</a><span>(7)</span>
+                </li>
+                 <li>
+                    <a href="/hguisu/article/category/1122753" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">socket网络编程</a><span>(8)</span>
+                </li>
+                 <li>
+                    <a href="/hguisu/article/category/1133340" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">设计模式</a><span>(26)</span>
+                </li>
+                 <li>
+                    <a href="/hguisu/article/category/1151353" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">AOP</a><span>(2)</span>
+                </li>
+                 <li>
+                    <a href="/hguisu/article/category/1152364" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">重构</a><span>(11)</span>
+                </li>
+                 <li>
+                    <a href="/hguisu/article/category/1173389" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">重构与模式</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="/hguisu/article/category/1230933" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">搜索引擎Search Engine</a><span>(15)</span>
+                </li>
+                 <li>
+                    <a href="/hguisu/article/category/1209788" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">大数据处理</a><span>(12)</span>
+                </li>
+                 <li>
+                    <a href="/hguisu/article/category/1302430" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">HTML5</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="/hguisu/article/category/1309674" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">Android</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="/hguisu/article/category/1422000" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">webserver</a><span>(3)</span>
+                </li>
+                 <li>
+                    <a href="/hguisu/article/category/1429288" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">NOSQL</a><span>(7)</span>
+                </li>
+                 <li>
+                    <a href="/hguisu/article/category/1825837" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">NOSQL Mongo</a><span>(0)</span>
+                </li>
+                 <li>
+                    <a href="/hguisu/article/category/1868795" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">分布式</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="/hguisu/article/category/2065283" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">数据结构与算法  xi</a><span>(0)</span>
+                </li>
+                 <li>
+                    <a href="/hguisu/article/category/2065287" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">协议</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="/hguisu/article/category/2294375" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">信息论的熵</a><span>(0)</span>
+                </li>
+                 <li>
+                    <a href="/hguisu/article/category/2482451" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">关于php的libevent扩展的应用</a><span>(0)</span>
+                </li>
+                 <li>
+                    <a href="/hguisu/article/category/2482459" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">libevent简单介绍</a><span>(0)</span>
+                </li>
+                 <li>
+                    <a href="/hguisu/article/category/5624615" onclick="_gaq.push(['_trackEvent','function', 'onclick', 'blog_articles_wenzhangfenlei']); ">SOA</a><span>(0)</span>
+                </li>
+</ul>
+</div><div id="panel_Archive" class="panel">
+<ul class="panel_head"><span>文章存档</span></ul>
+<ul class="panel_body">
+<div id="archive_list">
+<!--归档统计-->
+<li><a href="/hguisu/article/month/2015/10">2015年10月</a><span>(4)</span></li><li><a href="/hguisu/article/month/2015/05">2015年05月</a><span>(2)</span></li><li><a href="/hguisu/article/month/2015/04">2015年04月</a><span>(1)</span></li><li><a href="/hguisu/article/month/2015/01">2015年01月</a><span>(2)</span></li><li><a href="/hguisu/article/month/2014/10">2014年10月</a><span>(1)</span></li><li><a href="/hguisu/article/month/2014/09">2014年09月</a><span>(1)</span></li><li><a href="/hguisu/article/month/2014/08">2014年08月</a><span>(2)</span></li><li><a href="/hguisu/article/month/2014/05">2014年05月</a><span>(1)</span></li><li><a href="/hguisu/article/month/2014/03">2014年03月</a><span>(1)</span></li><li><a href="/hguisu/article/month/2014/02">2014年02月</a><span>(1)</span></li><li><a href="/hguisu/article/month/2014/01">2014年01月</a><span>(1)</span></li><li><a href="/hguisu/article/month/2013/12">2013年12月</a><span>(1)</span></li><li><a href="/hguisu/article/month/2013/10">2013年10月</a><span>(2)</span></li><li><a href="/hguisu/article/month/2013/09">2013年09月</a><span>(2)</span></li><li><a href="/hguisu/article/month/2013/08">2013年08月</a><span>(1)</span></li><li><a href="/hguisu/article/month/2013/07">2013年07月</a><span>(2)</span></li><li><a href="/hguisu/article/month/2013/06">2013年06月</a><span>(3)</span></li><li><a href="/hguisu/article/month/2013/05">2013年05月</a><span>(3)</span></li><li><a href="/hguisu/article/month/2013/03">2013年03月</a><span>(3)</span></li><li><a href="/hguisu/article/month/2013/02">2013年02月</a><span>(2)</span></li><li><a href="/hguisu/article/month/2013/01">2013年01月</a><span>(2)</span></li><li><a href="/hguisu/article/month/2012/12">2012年12月</a><span>(4)</span></li><li><a href="/hguisu/article/month/2012/11">2012年11月</a><span>(3)</span></li><li><a href="/hguisu/article/month/2012/10">2012年10月</a><span>(2)</span></li><li><a href="/hguisu/article/month/2012/09">2012年09月</a><span>(15)</span></li><li><a href="/hguisu/article/month/2012/08">2012年08月</a><span>(6)</span></li><li><a href="/hguisu/article/month/2012/07">2012年07月</a><span>(8)</span></li><li><a href="/hguisu/article/month/2012/06">2012年06月</a><span>(14)</span></li><li><a href="/hguisu/article/month/2012/05">2012年05月</a><span>(29)</span></li><li><a href="/hguisu/article/month/2012/04">2012年04月</a><span>(26)</span></li><li><a href="/hguisu/article/month/2012/03">2012年03月</a><span>(27)</span></li><li><a href="/hguisu/article/month/2012/02">2012年02月</a><span>(18)</span></li><li><a href="/hguisu/article/month/2011/12">2011年12月</a><span>(7)</span></li><li><a href="/hguisu/article/month/2011/01">2011年01月</a><span>(8)</span></li><li><a href="/hguisu/article/month/2010/07">2010年07月</a><span>(6)</span></li><li><a href="/hguisu/article/month/2007/12">2007年12月</a><span>(2)</span></li>
+</div>
+</ul>
+</div>
+<div id="hotarticls" class="panel">
+<ul class="panel_head">
+    <span>       
+阅读排行    </span>
+</ul>
+
+<ul class="panel_body itemlist">
+<li>
+<a href="/hguisu/article/details/7776068" title="八大排序算法">八大排序算法</a><span>(217422)</span>
+</li>
+<li>
+<a href="/hguisu/article/details/5731880" title="Mysql 多表联合查询效率分析及优化">Mysql 多表联合查询效率分析及优化</a><span>(129125)</span>
+</li>
+<li>
+<a href="/hguisu/article/details/7453390" title="socket阻塞与非阻塞，同步与异步、I/O模型">socket阻塞与非阻塞，同步与异步、I/O模型</a><span>(91553)</span>
+</li>
+<li>
+<a href="/hguisu/article/details/6155636" title="深入理解java异常处理机制">深入理解java异常处理机制</a><span>(84467)</span>
+</li>
+<li>
+<a href="/hguisu/article/details/7244413" title="hbase安装配置（整合到hadoop）">hbase安装配置（整合到hadoop）</a><span>(82960)</span>
+</li>
+<li>
+<a href="/hguisu/article/details/8930668" title="Nginx工作原理和优化、漏洞。">Nginx工作原理和优化、漏洞。</a><span>(72740)</span>
+</li>
+<li>
+<a href="/hguisu/article/details/7558249" title="设计模式 ( 十八 ) 策略模式Strategy（对象行为型）">设计模式 ( 十八 ) 策略模式Strategy（对象行为型）</a><span>(69212)</span>
+</li>
+<li>
+<a href="/hguisu/article/details/7256833" title="Hadoop Hive sql语法详解">Hadoop Hive sql语法详解</a><span>(63012)</span>
+</li>
+<li>
+<a href="/hguisu/article/details/7418161" title="Java输入输出流">Java输入输出流</a><span>(62367)</span>
+</li>
+<li>
+<a href="/hguisu/article/details/7237395" title="Hadoop集群配置（最全面总结）">Hadoop集群配置（最全面总结）</a><span>(61016)</span>
+</li>
+</ul>
+</div>
+<div id="hotarticls2" class="panel">
+<ul class="panel_head"><span>评论排行</span></ul>
+<ul class="panel_body itemlist">
+<li>
+<a href="/hguisu/article/details/6155636" title="深入理解java异常处理机制">深入理解java异常处理机制</a><span>(79)</span>
+</li>
+<li>
+<a href="/hguisu/article/details/7776068" title="八大排序算法">八大排序算法</a><span>(74)</span>
+</li>
+<li>
+<a href="/hguisu/article/details/7453390" title="socket阻塞与非阻塞，同步与异步、I/O模型">socket阻塞与非阻塞，同步与异步、I/O模型</a><span>(51)</span>
+</li>
+<li>
+<a href="/hguisu/article/details/7558249" title="设计模式 ( 十八 ) 策略模式Strategy（对象行为型）">设计模式 ( 十八 ) 策略模式Strategy（对象行为型）</a><span>(37)</span>
+</li>
+<li>
+<a href="/hguisu/article/details/7408047" title="硬盘的读写原理">硬盘的读写原理</a><span>(36)</span>
+</li>
+<li>
+<a href="/hguisu/article/details/7505909" title="设计模式（一）工厂模式Factory（创建型）">设计模式（一）工厂模式Factory（创建型）</a><span>(28)</span>
+</li>
+<li>
+<a href="/hguisu/article/details/7880288" title="海量数据处理算法—Bit-Map">海量数据处理算法—Bit-Map</a><span>(26)</span>
+</li>
+<li>
+<a href="/hguisu/article/details/7609483" title="UML图中类之间的关系:依赖,泛化,关联,聚合,组合,实现">UML图中类之间的关系:依赖,泛化,关联,聚合,组合,实现</a><span>(23)</span>
+</li>
+<li>
+<a href="/hguisu/article/details/7448528" title="PHP SOCKET编程">PHP SOCKET编程</a><span>(23)</span>
+</li>
+<li>
+<a href="/hguisu/article/details/7259716" title="HDFS写入和读取流程">HDFS写入和读取流程</a><span>(20)</span>
+</li>
+</ul>
+</div>
+<div id="homepageArticles" class="panel tracking-ad" data-mod="popu_4">
+<ul class="panel_head"><span>推荐文章</span></ul>
+<ul class="panel_body" id="ad_commend">
+<ul>
+<li><a href="http://blog.csdn.net/wangshubo1989/article/details/50001805" 
+
+target="_blank">*没有躲过的坑--正则表达式截取字符串</a></li>
+<li><a href="http://blog.csdn.net/developer_jiangqq/article/details/50000733" 
+
+target="_blank">*CardView完全解析与RecyclerView结合使用(三十二)</a></li>
+<li><a 
+
+href="http://blog.csdn.net/lyhhj/article/details/50002005"target="_blank">*And
+
+roid 高仿微信发朋友圈浏览图片效果</a></li>
+<li><a href="http://blog.csdn.net/gisshixisheng/article/details/49922677" 
+
+target="_blank">*通过Ajax的方式执行GP服务</a></li>
+
+<li><a href="http://blog.csdn.net/xfxyy_sxfancy/article/details/49758323"  
+
+target="_blank">*编译器架构的王者LLVM——（6）多遍翻译的宏翻译系统</a></li>
+<li><a href="http://blog.csdn.net/musicvs/article/details/49901941" 
+
+target="_blank">* 【笨木头Unity】入门之旅010（完结）：Demo之四处找死（五）
+
+_UI</a></li>
+</ul></ul>
+</div>
+
+
+<div id="newcomments" class="panel">
+<ul class="panel_head"><span>最新评论</span></ul>
+<ul class="panel_body itemlist">
+    <li>
+   
+         <a href="/hguisu/article/details/5713099#comments">程序的装入和链接</a>
+    <p style="margin:0px;"><a href="/qq_23134139" class="user_name">qq_23134139</a>:
+汤子瀛的《计算机操作系统》，你能别完全对着书抄不，我就是读了这本书，行看看一些其他的理解的……
+    </p>
+    </li>
+    <li>
+   
+         <a href="/hguisu/article/details/46687555#comments">架构师知识体系(3)--系统架构管理实践</a>
+    <p style="margin:0px;"><a href="/ilibolin" class="user_name">ilibolin</a>:
+速哥，顶一个
+    </p>
+    </li>
+    <li>
+   
+         <a href="/hguisu/article/details/7237395#comments">Hadoop集群配置（最全面总结）</a>
+    <p style="margin:0px;"><a href="/u010989063" class="user_name">u010989063</a>:
+the Big master of the gate
+    </p>
+    </li>
+    <li>
+   
+         <a href="/hguisu/article/details/7571617#comments">设计模式原则详解</a>
+    <p style="margin:0px;"><a href="/yunduanyueying" class="user_name">yunduanyueying</a>:
+赞，感谢分享
+    </p>
+    </li>
+    <li>
+   
+         <a href="/hguisu/article/details/7466316#comments">程序人生 PHP工程师</a>
+    <p style="margin:0px;"><a href="/feng2783581" class="user_name">feng2783581</a>:
+非常棒！
+    </p>
+    </li>
+    <li>
+   
+         <a href="/hguisu/article/details/39373311#comments">Linux服务器性能评估与优化(一)</a>
+    <p style="margin:0px;"><a href="/bababi" class="user_name">bababi</a>:
+总结的很详细。好文章
+    </p>
+    </li>
+    <li>
+   
+         <a href="/hguisu/article/details/8454368#comments">使用Storm实现实时大数据分析</a>
+    <p style="margin:0px;"><a href="/zeng_xm" class="user_name">zeng_xm</a>:
+感觉是不是有点复杂了
+    </p>
+    </li>
+    <li>
+   
+         <a href="/hguisu/article/details/8836819#comments">Redis应用场景</a>
+    <p style="margin:0px;"><a href="/mack415858775" class="user_name">mack415858775</a>:
+选择redisc，主要由于它的主从库可以备份复制，数据可以持久化到磁盘，为架构需要扩展，适应频繁计算...
+    </p>
+    </li>
+    <li>
+   
+         <a href="/hguisu/article/details/8836819#comments">程序的装入和链接</a>
+    <p style="margin:0px;"><a href="/qq_27251863" class="user_name">qq_27251863</a>:
+很详细
+    </p>
+    </li>
+    <li>
+   
+         <a href="/hguisu/article/details/7444092#comments">socket编程原理</a>
+    <p style="margin:0px;"><a href="/CSDN_wei" class="user_name">CSDN_wei</a>:
+很好
+    </p>
+    </li>
+</ul>
+</div>
+
+
+<div id="custom_column_36736957" class="panel">
+<ul class="panel_head"><span>友情链接</span></ul>
+<ul class="panel_body">
+
+<a href="http://www.tuling123.com" target="_blank">图灵机器人：聊天api的最佳选择</a>
+
+</ul>
+</div>    </div>
+    <div class="clear">
+    </div>
+ </div>   
+            <div class="clear">
+            </div>
+        </div>
+        
+
+<script type="text/javascript" src="http://c.csdnimg.cn/rabbit/cnick/cnick.js"></script>
+<script type="text/javascript" src="http://static.blog.csdn.net/scripts/newblog.min.js"></script>
+
+
+<script type="text/javascript" src="http://medal.blog.csdn.net/showblogmedal.ashx?blogid=265069"></script>
+<script type="text/javascript" src="http://static.blog.csdn.net/scripts/JavaScript1.js"></script>
+
+    <script type="text/javascript" src="http://passport.csdn.net/content/loginbox/login.js"></script>
+<script type="text/javascript">document.write("<img src=http://counter.csdn.net/pv.aspx?id=24 border=0 width=0 height=0>");</script>
+<script type="text/javascript" src="http://www.csdn.net/ui/scripts/Csdn/counter.js"></script>
+<script type="text/javascript" src="http://ad.csdn.net/scripts/ad-blog.js"></script>
+<script type="text/javascript">
+    $(function () {
+        function __get_code_toolbar(snippet_id) {
+            return $("<a href='https://code.csdn.net/snippets/"
+                    + snippet_id
+                    + "' target='_blank' title='在CODE上查看代码片' style='text-indent:0;'><img src='https://code.csdn.net/assets/CODE_ico.png' width=12 height=12 alt='在CODE上查看代码片' style='position:relative;top:1px;left:2px;'/></a>"
+                    + "<a href='https://code.csdn.net/snippets/"
+                    + snippet_id
+                    + "/fork' target='_blank' title='派生到我的代码片'  style='text-indent:0;'><img src='https://code.csdn.net/assets/ico_fork.svg' width=12 height=12 alt='派生到我的代码片' style='position:relative;top:2px;left:2px;'/></a>");
+        }
+        
+        $("[code_snippet_id]").each(function () {
+            __s_id = $(this).attr("code_snippet_id");
+            if (__s_id != null && __s_id != "" && __s_id != 0 && parseInt(__s_id) > 70020) {
+                __code_tool = __get_code_toolbar(__s_id);
+                $(this).prev().find(".tools").append(__code_tool);
+            }
+        });
+    });
+</script>
+
+
+
+
+    </div>
+      <!--new top-->
+    
+    <script id="csdn-toolbar-id" btnId="header_notice_num" wrapId="note1" count="5" subCount="5" type="text/javascript" src="http://static.csdn.net/public/common/toolbar/js/toolbar.js"></script>     <!--new top-->
+   
+    <link href="http://c.csdnimg.cn/comm_ask/css/ask_float_block.css" type="text/css" rel="stylesheet" />
+    <script language='JavaScript' type='text/javascript' src='http://c.csdnimg.cn/comm_ask/js/libs/wmd.js'></script>
+    <script language='JavaScript' type='text/javascript' src='http://c.csdnimg.cn/comm_ask/js/libs/showdown.js'></script>
+    <script language='JavaScript' type='text/javascript' src='http://c.csdnimg.cn/comm_ask/js/libs/prettify.js'></script>
+    <script language='JavaScript' type='text/javascript' src='http://c.csdnimg.cn/comm_ask/js/apps/ask_float_block.js'></script>
+   
+</body>
+</html>   
+ 
