@@ -1,8 +1,8 @@
 ---
 date: 2015-01-31T00:30:03+08:00
 description: ""
-tags: ["Hugo","静态网站生成器","博客","教程","网站"]
-title: "Hugo静态网站生成器中文教程"
+tags: ["gdb","gdb调试","gdb调试方法","多线程调试","网站"]
+title: "gdb调试方法精粹"
 topics: []
 draft: false
 url: /post/2015-01-31
