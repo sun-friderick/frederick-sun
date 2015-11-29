@@ -1,11 +1,11 @@
 ---
-date: 2015-01-31T00:30:03+08:00
+date: 2015-01-29T00:30:03+08:00
 description: ""
 tags: ["gdb","gdb多线程调试","多线程调试","调试","多线程"]
 title: "gdb多线程调试"
 topics: []
 draft: false
-url: /post/2015-11-31
+url: /post/2015-11-29-5
 ---
 
 # 

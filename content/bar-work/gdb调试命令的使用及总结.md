@@ -1,11 +1,11 @@
 ---
-date: 2015-01-31T00:30:03+08:00
+date: 2015-11-29T00:30:03+08:00
 description: ""
 tags: ["gdb","gdb调试命令","调试命令的使用","gdb调试","gdb使用","教程","gdb总结"]
 title: "gdb调试命令的使用及总结"
 topics: []
 draft: false
-url: /post/2015-01-31
+url: /post/2015-11-29-6
 ---
 
 #gdb调试命令的使用及总结

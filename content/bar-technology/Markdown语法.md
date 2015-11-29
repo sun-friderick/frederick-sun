@@ -1,11 +1,11 @@
 ---
-date: 2015-11-31T00:30:03+08:00
+date: 2015-11-29T00:30:03+08:00
 description: ""
 tags: ["markdown","语法","Markdown语法","教程"]
 title: "Markdown语法"
 topics: []
 draft: false
-url: /post/2015-11-31
+url: /post/2015-11-29-1
 ---
  
 

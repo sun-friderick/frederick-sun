@@ -5,7 +5,7 @@ tags: ["gdb","调试","gdb调试","教程","调试教程"]
 title: "gdb调试"
 topics: []
 draft: false
-url: /post/2015-11-29
+url: /post/2015-11-29-7
 ---
 
 
